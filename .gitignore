@@ -14,3 +14,8 @@ app/build/
 
 # Claude Code local settings (machine-specific, not shared)
 .claude/settings.local.json
+
+# Release signing (nunca subir contraseñas ni keystore al repo)
+keystore.properties
+*.jks
+*.keystore
