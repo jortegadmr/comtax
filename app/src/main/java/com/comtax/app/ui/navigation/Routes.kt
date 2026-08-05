@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object ConfirmacionMovimiento
 
 @Serializable data object Balance
+@Serializable data class BalanceCuenta(val cuentaId: Long)
 @Serializable data class MovimientoDetalle(val id: Long)
 
 @Serializable data object Ajustes

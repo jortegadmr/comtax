@@ -21,6 +21,7 @@ import com.comtax.app.ui.altamovimiento.AltaMovimientoViewModel
 import com.comtax.app.ui.altamovimiento.ConfirmacionMovimientoScreen
 import com.comtax.app.ui.altamovimiento.FormularioMovimientoScreen
 import com.comtax.app.ui.altamovimiento.SeleccionCuentaScreen
+import com.comtax.app.ui.balance.BalanceCuentaScreen
 import com.comtax.app.ui.balance.BalanceScreen
 import com.comtax.app.ui.balance.MovimientoDetalleScreen
 import com.comtax.app.ui.home.HomeScreen
@@ -113,7 +114,11 @@ fun ComtaxNavHost() {
 
         composable<Balance> {
             BalanceScreen(
-                onVolver = { navController.popBackStack() },
+                onCuentaClick = { cuentaId -> navController.navigate(BalanceCuenta(cuentaId)) }
+            )
+        }
+        composable<BalanceCuenta> {
+            BalanceCuentaScreen(
                 onMovimientoClick = { id -> navController.navigate(MovimientoDetalle(id)) }
             )
         }
