@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.SelectorColorCuenta
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 

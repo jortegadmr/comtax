@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.CampoImporte
+import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import kotlinx.coroutines.launch
@@ -55,10 +56,16 @@ fun FormularioMovimientoScreen(
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        Text(
-            text = "Cuenta: ${estado.cuentaSeleccionada?.nombre.orEmpty()}",
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+            estado.cuentaSeleccionada?.let {
+                PuntoColor(it.colorHex)
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+            }
+            Text(
+                text = "Cuenta: ${estado.cuentaSeleccionada?.nombre.orEmpty()}",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         Spacer(modifier = Modifier.padding(top = 20.dp))
 
         CampoImporte(valor = estado.importeTexto, onValorCambia = viewModel::onImporteCambia)

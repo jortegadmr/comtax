@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class CuentaEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val nombre: String,
-    val archivada: Boolean = false
+    val archivada: Boolean = false,
+    val colorHex: String = "#1565C0"
 )

@@ -12,7 +12,7 @@ import com.comtax.app.data.local.entity.SobreEntity
 
 @Database(
     entities = [CuentaEntity::class, SobreEntity::class, MovimientoEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

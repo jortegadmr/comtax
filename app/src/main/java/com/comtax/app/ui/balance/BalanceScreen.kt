@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
+import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
@@ -95,9 +96,14 @@ fun BalanceScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                         ) {
-                            Text(text = cuenta.nombre, style = MaterialTheme.typography.titleMedium)
+                            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                                PuntoColor(cuenta.colorHex)
+                                Spacer(modifier = Modifier.padding(start = 12.dp))
+                                Text(text = cuenta.nombre, style = MaterialTheme.typography.titleMedium)
+                            }
                             Text(
                                 text = "${centimosATexto(saldo)} €",
                                 style = MaterialTheme.typography.titleMedium,

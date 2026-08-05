@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,9 +37,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.colorDesdeHex
 import com.comtax.app.util.centimosATexto
 import java.time.Instant
 import java.time.ZoneOffset
@@ -69,11 +72,23 @@ fun BalanceCuentaScreen(
         }
     }
 
+    val colorCuenta = estado.cuenta?.let { colorDesdeHex(it.colorHex) }
+
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(estado.cuenta?.nombre ?: "", style = MaterialTheme.typography.titleLarge)
-            })
+            TopAppBar(
+                title = {
+                    Text(estado.cuenta?.nombre ?: "", style = MaterialTheme.typography.titleLarge)
+                },
+                colors = if (colorCuenta != null) {
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = colorCuenta,
+                        titleContentColor = BlancoSobrePrimario
+                    )
+                } else {
+                    TopAppBarDefaults.topAppBarColors()
+                }
+            )
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxWidth().padding(padding).padding(Dimens.espacioPantalla)) {

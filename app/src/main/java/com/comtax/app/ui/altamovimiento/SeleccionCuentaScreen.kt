@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +18,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.EstadoVacio
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
+import com.comtax.app.ui.theme.colorDesdeHex
 
 @Composable
 fun SeleccionCuentaScreen(
@@ -42,7 +45,11 @@ fun SeleccionCuentaScreen(
                     onClick = {
                         viewModel.onCuentaSeleccionada(cuenta)
                         onCuentaElegida()
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorDesdeHex(cuenta.colorHex),
+                        contentColor = BlancoSobrePrimario
+                    )
                 )
             }
         }

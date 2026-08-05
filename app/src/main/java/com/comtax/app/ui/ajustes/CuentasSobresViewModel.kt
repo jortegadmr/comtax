@@ -7,6 +7,7 @@ import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.SobreEntity
 import com.comtax.app.data.repository.CuentaRepository
 import com.comtax.app.data.repository.SobreRepository
+import com.comtax.app.ui.theme.siguienteColorLibre
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ data class CuentasSobresUiState(
     val cuentaSeleccionadaId: Long? = null,
     val sobresDeCuenta: List<SobreEntity> = emptyList(),
     val nombreNuevaCuenta: String = "",
+    val colorNuevaCuenta: String = siguienteColorLibre(0),
     val nombreNuevoSobre: String = ""
 )
 
@@ -37,7 +39,12 @@ class CuentasSobresViewModel @Inject constructor(
 
     init {
         cuentaRepository.observarTodas()
-            .onEach { cuentas -> _uiState.value = _uiState.value.copy(cuentas = cuentas) }
+            .onEach { cuentas ->
+                _uiState.value = _uiState.value.copy(
+                    cuentas = cuentas,
+                    colorNuevaCuenta = siguienteColorLibre(cuentas.size)
+                )
+            }
             .launchIn(viewModelScope)
     }
 
@@ -45,16 +52,25 @@ class CuentasSobresViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(nombreNuevaCuenta = texto)
     }
 
+    fun onColorNuevaCuentaCambia(colorHex: String) {
+        _uiState.value = _uiState.value.copy(colorNuevaCuenta = colorHex)
+    }
+
     fun crearCuenta() = viewModelScope.launch {
-        val nombre = _uiState.value.nombreNuevaCuenta.trim()
+        val estado = _uiState.value
+        val nombre = estado.nombreNuevaCuenta.trim()
         if (nombre.isBlank()) return@launch
-        cuentaRepository.crear(nombre)
+        cuentaRepository.crear(nombre, estado.colorNuevaCuenta)
         _uiState.value = _uiState.value.copy(nombreNuevaCuenta = "")
     }
 
     fun renombrarCuenta(id: Long, nombre: String) = viewModelScope.launch {
         if (nombre.isBlank()) return@launch
         cuentaRepository.renombrar(id, nombre.trim())
+    }
+
+    fun cambiarColorCuenta(id: Long, colorHex: String) = viewModelScope.launch {
+        cuentaRepository.cambiarColor(id, colorHex)
     }
 
     fun archivarCuenta(id: Long) = viewModelScope.launch { cuentaRepository.archivar(id) }

@@ -33,4 +33,7 @@ interface CuentaDao {
 
     @Query("UPDATE cuentas SET nombre = :nombre WHERE id = :id")
     suspend fun renombrar(id: Long, nombre: String)
+
+    @Query("UPDATE cuentas SET colorHex = :colorHex WHERE id = :id")
+    suspend fun cambiarColor(id: Long, colorHex: String)
 }

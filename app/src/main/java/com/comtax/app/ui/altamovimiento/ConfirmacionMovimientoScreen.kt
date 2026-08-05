@@ -1,6 +1,7 @@
 package com.comtax.app.ui.altamovimiento
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
+import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.util.centimosATexto
 import com.comtax.app.util.textoACentimos
@@ -49,7 +51,7 @@ fun ConfirmacionMovimientoScreen(
             Column(modifier = Modifier.padding(20.dp)) {
                 FilaResumen("Tipo", tituloTipo)
                 FilaResumen("Importe", "${centimosATexto(importeCentimos)} €")
-                FilaResumen("Cuenta", estado.cuentaSeleccionada?.nombre.orEmpty())
+                FilaResumen("Cuenta", estado.cuentaSeleccionada?.nombre.orEmpty(), estado.cuentaSeleccionada?.colorHex)
                 estado.sobreSeleccionado?.let { FilaResumen("Sobre", it.nombre) }
                 FilaResumen("Fecha", estado.fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 FilaResumen("Concepto", estado.concepto)
@@ -86,10 +88,15 @@ fun ConfirmacionMovimientoScreen(
 }
 
 @Composable
-private fun FilaResumen(etiqueta: String, valor: String) {
-    Text(
-        text = "$etiqueta: $valor",
-        style = MaterialTheme.typography.bodyLarge,
+private fun FilaResumen(etiqueta: String, valor: String, colorHex: String? = null) {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 4.dp)
-    )
+    ) {
+        colorHex?.let {
+            PuntoColor(it)
+            Spacer(modifier = Modifier.padding(start = 8.dp))
+        }
+        Text(text = "$etiqueta: $valor", style = MaterialTheme.typography.bodyLarge)
+    }
 }

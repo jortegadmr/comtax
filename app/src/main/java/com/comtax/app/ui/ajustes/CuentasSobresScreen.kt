@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +35,8 @@ import com.comtax.app.data.local.entity.CuentaEntity
 import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.SobreEntity
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.PuntoColor
+import com.comtax.app.ui.common.SelectorColorCuenta
 import com.comtax.app.ui.theme.Dimens
 
 @Composable
@@ -42,6 +45,7 @@ fun CuentasSobresScreen(
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var cuentaARenombrar by remember { mutableStateOf<CuentaEntity?>(null) }
+    var cuentaAColorear by remember { mutableStateOf<CuentaEntity?>(null) }
     var sobreARenombrar by remember { mutableStateOf<SobreEntity?>(null) }
 
     Column(
@@ -63,13 +67,21 @@ fun CuentasSobresScreen(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        PuntoColor(cuenta.colorHex)
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                        Text(
+                            text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                     Row {
+                        IconButton(onClick = { cuentaAColorear = cuenta }) {
+                            Icon(Icons.Filled.Palette, contentDescription = "Cambiar color")
+                        }
                         IconButton(onClick = { cuentaARenombrar = cuenta }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Renombrar")
                         }
@@ -91,7 +103,12 @@ fun CuentasSobresScreen(
             label = { Text("Nombre de la nueva cuenta") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.padding(top = 8.dp))
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SelectorColorCuenta(
+            colorSeleccionado = estado.colorNuevaCuenta,
+            onColorSeleccionado = viewModel::onColorNuevaCuentaCambia
+        )
+        Spacer(modifier = Modifier.padding(top = 12.dp))
         BotonGrande(texto = "Crear cuenta", onClick = viewModel::crearCuenta)
 
         val cuentaSeleccionada = estado.cuentas.firstOrNull { it.id == estado.cuentaSeleccionadaId }
@@ -153,6 +170,25 @@ fun CuentasSobresScreen(
                 sobreARenombrar = null
             },
             onCancelar = { sobreARenombrar = null }
+        )
+    }
+
+    cuentaAColorear?.let { cuenta ->
+        AlertDialog(
+            onDismissRequest = { cuentaAColorear = null },
+            title = { Text("Color de ${cuenta.nombre}") },
+            text = {
+                SelectorColorCuenta(
+                    colorSeleccionado = cuenta.colorHex,
+                    onColorSeleccionado = { hex ->
+                        viewModel.cambiarColorCuenta(cuenta.id, hex)
+                        cuentaAColorear = null
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { cuentaAColorear = null }) { Text("Cerrar") }
+            }
         )
     }
 }

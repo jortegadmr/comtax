@@ -3,6 +3,7 @@ package com.comtax.app.di
 import android.content.Context
 import androidx.room.Room
 import com.comtax.app.data.local.ComtaxDatabase
+import com.comtax.app.data.local.MIGRATION_1_2
 import com.comtax.app.data.local.dao.CuentaDao
 import com.comtax.app.data.local.dao.MovimientoDao
 import com.comtax.app.data.local.dao.SobreDao
@@ -21,6 +22,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): ComtaxDatabase =
         Room.databaseBuilder(context, ComtaxDatabase::class.java, ComtaxDatabase.NOMBRE_ARCHIVO)
+            .addMigrations(MIGRATION_1_2)
             .build()
 
     @Provides

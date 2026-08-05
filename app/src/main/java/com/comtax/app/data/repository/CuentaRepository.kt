@@ -16,9 +16,12 @@ class CuentaRepository @Inject constructor(
 
     suspend fun contarCuentas(): Int = cuentaDao.contarCuentas()
 
-    suspend fun crear(nombre: String): Long = cuentaDao.insertar(CuentaEntity(nombre = nombre))
+    suspend fun crear(nombre: String, colorHex: String): Long =
+        cuentaDao.insertar(CuentaEntity(nombre = nombre, colorHex = colorHex))
 
     suspend fun renombrar(id: Long, nombre: String) = cuentaDao.renombrar(id, nombre)
+
+    suspend fun cambiarColor(id: Long, colorHex: String) = cuentaDao.cambiarColor(id, colorHex)
 
     suspend fun archivar(id: Long) = cuentaDao.cambiarArchivada(id, true)
 
