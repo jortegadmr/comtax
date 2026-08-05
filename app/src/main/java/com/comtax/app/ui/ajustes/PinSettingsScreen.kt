@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -17,21 +18,22 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinSettingsScreen(
+    onVolver: () -> Unit,
     viewModel: PinSettingsViewModel = hiltViewModel()
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     val opcionesTeclado = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
 
-    Column(modifier = Modifier.fillMaxSize().padding(Dimens.espacioPantalla)) {
-        Text(text = "Cambiar PIN", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.padding(top = 24.dp))
-
+    ScaffoldConVolver(titulo = "Cambiar PIN", onVolver = onVolver) { padding ->
+    Column(modifier = Modifier.fillMaxSize().padding(padding).padding(Dimens.espacioPantalla)) {
         OutlinedTextField(
             value = estado.pinActual,
             onValueChange = viewModel::onPinActualCambia,
@@ -70,5 +72,6 @@ fun PinSettingsScreen(
 
         Spacer(modifier = Modifier.padding(top = 32.dp))
         BotonGrande(texto = "Guardar nuevo PIN", onClick = viewModel::cambiarPin)
+    }
     }
 }

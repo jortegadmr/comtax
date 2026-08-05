@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.comtax.app.data.local.entity.CuentaEntity
 import com.comtax.app.data.local.entity.SobreEntity
 import com.comtax.app.data.local.entity.TipoMovimiento
+import com.comtax.app.data.repository.AvisoNegativo
 import com.comtax.app.data.repository.CuentaRepository
 import com.comtax.app.data.repository.MovimientoRepository
 import com.comtax.app.data.repository.SobreRepository
@@ -23,13 +24,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
-
-data class AvisoNegativo(
-    val sobreQuedaNegativo: Boolean,
-    val cuentaQuedaNegativa: Boolean,
-    val saldoResultanteSobreCentimos: Long?,
-    val saldoResultanteCuentaCentimos: Long
-)
 
 data class AltaMovimientoUiState(
     val tipo: TipoMovimiento,
@@ -118,28 +112,14 @@ class AltaMovimientoViewModel @Inject constructor(
     suspend fun prepararConfirmacion() {
         val estado = _uiState.value
         val importe = textoACentimos(estado.importeTexto) ?: return
-        if (estado.tipo == TipoMovimiento.INGRESO) {
-            _uiState.value = estado.copy(avisoNegativo = null)
-            return
-        }
         val cuentaId = estado.cuentaSeleccionada?.id ?: return
-        val saldoCuentaResultante = movimientoRepository.saldoActualCuenta(cuentaId) - importe
-        val sobreId = estado.sobreSeleccionado?.id
-        val saldoSobreResultante = sobreId?.let { movimientoRepository.saldoActualSobre(it) - importe }
-
-        val cuentaNegativa = saldoCuentaResultante < 0
-        val sobreNegativo = saldoSobreResultante != null && saldoSobreResultante < 0
-
-        _uiState.value = _uiState.value.copy(
-            avisoNegativo = if (cuentaNegativa || sobreNegativo) {
-                AvisoNegativo(
-                    sobreQuedaNegativo = sobreNegativo,
-                    cuentaQuedaNegativa = cuentaNegativa,
-                    saldoResultanteSobreCentimos = saldoSobreResultante,
-                    saldoResultanteCuentaCentimos = saldoCuentaResultante
-                )
-            } else null
+        val aviso = movimientoRepository.calcularAvisoNegativo(
+            tipo = estado.tipo,
+            cuentaId = cuentaId,
+            sobreId = estado.sobreSeleccionado?.id,
+            importeCentimos = importe
         )
+        _uiState.value = _uiState.value.copy(avisoNegativo = aviso)
     }
 
     fun confirmar() {

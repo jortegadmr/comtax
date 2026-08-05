@@ -50,6 +50,7 @@ fun ComtaxNavHost() {
     }
 
     val inicio = remember { if (vm.tienePinConfigurado()) Bloqueo else PinSetup }
+    val onVolver: () -> Unit = { navController.popBackStack() }
 
     NavHost(navController = navController, startDestination = inicio) {
 
@@ -90,6 +91,8 @@ fun ComtaxNavHost() {
                 val altaVm: AltaMovimientoViewModel = hiltViewModel(parent)
                 SeleccionCuentaScreen(
                     viewModel = altaVm,
+                    onVolver = onVolver,
+                    onIrAAjustes = { navController.navigate(Ajustes) },
                     onCuentaElegida = { navController.navigate(FormularioMovimiento) }
                 )
             }
@@ -98,6 +101,7 @@ fun ComtaxNavHost() {
                 val altaVm: AltaMovimientoViewModel = hiltViewModel(parent)
                 FormularioMovimientoScreen(
                     viewModel = altaVm,
+                    onVolver = onVolver,
                     onContinuar = { navController.navigate(ConfirmacionMovimiento) }
                 )
             }
@@ -114,27 +118,30 @@ fun ComtaxNavHost() {
 
         composable<Balance> {
             BalanceScreen(
+                onVolver = onVolver,
                 onCuentaClick = { cuentaId -> navController.navigate(BalanceCuenta(cuentaId)) }
             )
         }
         composable<BalanceCuenta> {
             BalanceCuentaScreen(
+                onVolver = onVolver,
                 onMovimientoClick = { id -> navController.navigate(MovimientoDetalle(id)) }
             )
         }
         composable<MovimientoDetalle> {
-            MovimientoDetalleScreen(onVolver = { navController.popBackStack() })
+            MovimientoDetalleScreen(onVolver = onVolver)
         }
 
         composable<Ajustes> {
             AjustesScreen(
+                onVolver = onVolver,
                 onCuentasSobres = { navController.navigate(CuentasSobres) },
                 onFusionSobres = { navController.navigate(FusionSobres) },
                 onPinSettings = { navController.navigate(PinSettings) }
             )
         }
-        composable<CuentasSobres> { CuentasSobresScreen() }
-        composable<FusionSobres> { FusionSobresScreen() }
-        composable<PinSettings> { PinSettingsScreen() }
+        composable<CuentasSobres> { CuentasSobresScreen(onVolver = onVolver) }
+        composable<FusionSobres> { FusionSobresScreen(onVolver = onVolver) }
+        composable<PinSettings> { PinSettingsScreen(onVolver = onVolver) }
     }
 }

@@ -36,11 +36,15 @@ import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.SobreEntity
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.PuntoColor
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.common.SelectorColorCuenta
 import com.comtax.app.ui.theme.Dimens
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CuentasSobresScreen(
+    onVolver: () -> Unit,
     viewModel: CuentasSobresViewModel = hiltViewModel()
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -48,15 +52,14 @@ fun CuentasSobresScreen(
     var cuentaAColorear by remember { mutableStateOf<CuentaEntity?>(null) }
     var sobreARenombrar by remember { mutableStateOf<SobreEntity?>(null) }
 
+    ScaffoldConVolver(titulo = "Cuentas y sobres", onVolver = onVolver) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        Text(text = "Cuentas", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.padding(top = 16.dp))
-
         estado.cuentas.forEach { cuenta ->
             Card(
                 modifier = Modifier
@@ -149,6 +152,7 @@ fun CuentasSobresScreen(
             Spacer(modifier = Modifier.padding(top = 8.dp))
             BotonGrande(texto = "Crear sobre", onClick = viewModel::crearSobre)
         }
+    }
     }
 
     cuentaARenombrar?.let { cuenta ->

@@ -5,6 +5,8 @@ import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,7 +29,9 @@ class PinManager @Inject constructor(
     fun tienePinConfigurado(): Boolean =
         prefs.contains(CLAVE_SALT) && prefs.contains(CLAVE_HASH)
 
-    fun configurarPin(pin: String) {
+    // PBKDF2 (120.000 iteraciones) tarda decenas de ms: se calcula fuera del hilo principal
+    // para no congelar la UI mientras se escribe o cambia el PIN.
+    suspend fun configurarPin(pin: String) = withContext(Dispatchers.Default) {
         val salt = PinHasher.generarSalt()
         val hash = PinHasher.hash(pin, salt)
         prefs.edit()
@@ -36,15 +40,15 @@ class PinManager @Inject constructor(
             .apply()
     }
 
-    fun verificarPin(pin: String): Boolean {
-        val saltTexto = prefs.getString(CLAVE_SALT, null) ?: return false
-        val hashTexto = prefs.getString(CLAVE_HASH, null) ?: return false
+    suspend fun verificarPin(pin: String): Boolean = withContext(Dispatchers.Default) {
+        val saltTexto = prefs.getString(CLAVE_SALT, null) ?: return@withContext false
+        val hashTexto = prefs.getString(CLAVE_HASH, null) ?: return@withContext false
         val salt = Base64.decode(saltTexto, Base64.NO_WRAP)
         val hashEsperado = Base64.decode(hashTexto, Base64.NO_WRAP)
-        return PinHasher.coincide(pin, salt, hashEsperado)
+        PinHasher.coincide(pin, salt, hashEsperado)
     }
 
-    fun cambiarPin(pinActual: String, pinNuevo: String): Boolean {
+    suspend fun cambiarPin(pinActual: String, pinNuevo: String): Boolean {
         if (!verificarPin(pinActual)) return false
         configurarPin(pinNuevo)
         return true

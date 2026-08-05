@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -29,9 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.CampoImporte
+import com.comtax.app.ui.common.ScaffoldConVolver
+import com.comtax.app.util.centimosATexto
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import java.time.Instant
@@ -61,15 +65,14 @@ fun MovimientoDetalleScreen(
     }
     val movimiento = estado.movimiento!!
 
+    ScaffoldConVolver(titulo = "Detalle del movimiento", onVolver = onVolver) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        Text(text = "Detalle del movimiento", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.padding(top = 20.dp))
-
         if (movimiento.pendienteCuadre) {
             Text(text = "Pendiente de cuadre", color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -103,14 +106,16 @@ fun MovimientoDetalleScreen(
                     FilterChip(
                         selected = estado.sobreSeleccionado == null,
                         onClick = { viewModel.onSobreSeleccionado(null) },
-                        label = { Text("Sin sobre") }
+                        label = { Text("Sin sobre", style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
                 items(estado.sobresActivos) { sobre ->
                     FilterChip(
                         selected = estado.sobreSeleccionado?.id == sobre.id,
                         onClick = { viewModel.onSobreSeleccionado(sobre) },
-                        label = { Text(sobre.nombre) }
+                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
             }
@@ -121,10 +126,28 @@ fun MovimientoDetalleScreen(
             Text(text = estado.errorFormulario!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
 
+        val aviso = estado.avisoNegativo
+        if (aviso != null) {
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+            val mensaje = buildString {
+                if (aviso.sobreQuedaNegativo && aviso.saldoResultanteSobreCentimos != null) {
+                    append("Este cambio dejará el sobre en ${centimosATexto(aviso.saldoResultanteSobreCentimos)} €. ")
+                }
+                if (aviso.cuentaQuedaNegativa) {
+                    append("Este cambio dejará la cuenta en ${centimosATexto(aviso.saldoResultanteCuentaCentimos)} €.")
+                }
+            }
+            AvisoNegativoCard(mensaje = mensaje.trim())
+        }
+
         Spacer(modifier = Modifier.padding(top = 32.dp))
-        BotonGrande(texto = "Guardar cambios", onClick = viewModel::guardarEdicion)
+        BotonGrande(
+            texto = if (aviso != null) "Guardar de todas formas" else "Guardar cambios",
+            onClick = viewModel::onGuardarClick
+        )
         Spacer(modifier = Modifier.padding(top = 12.dp))
         BotonGrandeSecundario(texto = "Anular movimiento", onClick = viewModel::anular)
+    }
     }
 
     if (mostrarDatePicker) {

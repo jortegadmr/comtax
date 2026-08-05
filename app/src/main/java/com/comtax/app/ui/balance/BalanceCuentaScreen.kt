@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,10 +18,8 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -34,9 +33,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
@@ -50,6 +51,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BalanceCuentaScreen(
+    onVolver: () -> Unit,
     onMovimientoClick: (Long) -> Unit,
     viewModel: BalanceCuentaViewModel = hiltViewModel()
 ) {
@@ -73,23 +75,16 @@ fun BalanceCuentaScreen(
     }
 
     val colorCuenta = estado.cuenta?.let { colorDesdeHex(it.colorHex) }
+    val coloresTopBar = if (colorCuenta != null) {
+        TopAppBarDefaults.topAppBarColors(containerColor = colorCuenta, titleContentColor = BlancoSobrePrimario)
+    } else {
+        TopAppBarDefaults.topAppBarColors()
+    }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(estado.cuenta?.nombre ?: "", style = MaterialTheme.typography.titleLarge)
-                },
-                colors = if (colorCuenta != null) {
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colorCuenta,
-                        titleContentColor = BlancoSobrePrimario
-                    )
-                } else {
-                    TopAppBarDefaults.topAppBarColors()
-                }
-            )
-        }
+    ScaffoldConVolver(
+        titulo = estado.cuenta?.nombre ?: "",
+        onVolver = onVolver,
+        colors = coloresTopBar
     ) { padding ->
         Column(modifier = Modifier.fillMaxWidth().padding(padding).padding(Dimens.espacioPantalla)) {
 
@@ -109,7 +104,14 @@ fun BalanceCuentaScreen(
                         FilterChip(
                             selected = estado.sobreSeleccionadoId == sobre.id,
                             onClick = { viewModel.seleccionarSobre(sobre.id) },
-                            label = { Text("${sobre.nombre}: ${centimosATexto(saldoSobre)} €") }
+                            label = {
+                                val sufijo = if (sobre.estado == EstadoSobre.ARCHIVADO) " (archivado)" else ""
+                                Text(
+                                    "${sobre.nombre}$sufijo: ${centimosATexto(saldoSobre)} €",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
+                            modifier = Modifier.heightIn(min = 52.dp)
                         )
                     }
                 }

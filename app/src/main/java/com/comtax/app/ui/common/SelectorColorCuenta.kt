@@ -1,6 +1,8 @@
 package com.comtax.app.ui.common
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.comtax.app.ui.theme.BordeFuerte
 import com.comtax.app.ui.theme.colorDesdeHex
 import com.comtax.app.ui.theme.paletaCuentas
 
@@ -23,9 +26,10 @@ import com.comtax.app.ui.theme.paletaCuentas
 fun PuntoColor(colorHex: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(16.dp)
+            .size(24.dp)
             .clip(CircleShape)
             .background(colorDesdeHex(colorHex))
+            .border(BorderStroke(1.5.dp, BordeFuerte), CircleShape)
     )
 }
 

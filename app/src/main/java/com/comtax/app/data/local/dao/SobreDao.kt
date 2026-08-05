@@ -19,6 +19,9 @@ interface SobreDao {
     @Query("SELECT * FROM sobres WHERE cuentaId = :cuentaId AND estado = 'ACTIVO' ORDER BY nombre")
     fun observarActivosDeCuenta(cuentaId: Long): Flow<List<SobreEntity>>
 
+    @Query("SELECT * FROM sobres WHERE cuentaId = :cuentaId ORDER BY nombre")
+    fun observarTodosDeCuenta(cuentaId: Long): Flow<List<SobreEntity>>
+
     @Query("SELECT * FROM sobres WHERE id = :id")
     suspend fun obtenerPorId(id: Long): SobreEntity?
 

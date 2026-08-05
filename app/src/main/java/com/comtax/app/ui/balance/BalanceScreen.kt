@@ -14,9 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
 import com.comtax.app.ui.common.PuntoColor
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
@@ -36,6 +35,7 @@ import com.comtax.app.util.centimosATexto
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BalanceScreen(
+    onVolver: () -> Unit,
     onCuentaClick: (Long) -> Unit,
     viewModel: BalanceViewModel = hiltViewModel()
 ) {
@@ -55,15 +55,13 @@ fun BalanceScreen(
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBar(title = { Text("Balance y registro", style = MaterialTheme.typography.titleLarge) }) }
-    ) { padding ->
+    ScaffoldConVolver(titulo = "Balance y registro", onVolver = onVolver) { padding ->
         if (estado.cuentas.isEmpty()) {
             EstadoVacio(
                 mensaje = "No hay cuentas creadas todavía.\nCréalas desde Ajustes.",
                 modifier = Modifier.padding(padding)
             )
-            return@Scaffold
+            return@ScaffoldConVolver
         }
 
         Column(modifier = Modifier.fillMaxWidth().padding(padding).padding(Dimens.espacioPantalla)) {
@@ -102,7 +100,10 @@ fun BalanceScreen(
                             Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                                 PuntoColor(cuenta.colorHex)
                                 Spacer(modifier = Modifier.padding(start = 12.dp))
-                                Text(text = cuenta.nombre, style = MaterialTheme.typography.titleMedium)
+                                Text(
+                                    text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
                             }
                             Text(
                                 text = "${centimosATexto(saldo)} €",

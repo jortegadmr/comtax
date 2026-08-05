@@ -2,10 +2,10 @@ package com.comtax.app.ui.altamovimiento
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.CampoImporte
-import com.comtax.app.ui.common.PuntoColor
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import kotlinx.coroutines.launch
@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun FormularioMovimientoScreen(
     viewModel: AltaMovimientoViewModel,
+    onVolver: () -> Unit,
     onContinuar: () -> Unit
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,24 +51,14 @@ fun FormularioMovimientoScreen(
     var mostrarDatePicker by remember { mutableStateOf(false) }
     val formatoFecha = remember { DateTimeFormatter.ofPattern("dd/MM/yyyy") }
 
+    ScaffoldConVolver(titulo = estado.cuentaSeleccionada?.nombre.orEmpty(), onVolver = onVolver) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-            estado.cuentaSeleccionada?.let {
-                PuntoColor(it.colorHex)
-                Spacer(modifier = Modifier.padding(start = 8.dp))
-            }
-            Text(
-                text = "Cuenta: ${estado.cuentaSeleccionada?.nombre.orEmpty()}",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-        Spacer(modifier = Modifier.padding(top = 20.dp))
-
         CampoImporte(valor = estado.importeTexto, onValorCambia = viewModel::onImporteCambia)
         Spacer(modifier = Modifier.padding(top = 16.dp))
 
@@ -95,14 +86,16 @@ fun FormularioMovimientoScreen(
                     FilterChip(
                         selected = estado.sobreSeleccionado == null,
                         onClick = { viewModel.onSobreSeleccionado(null) },
-                        label = { Text("Sin sobre") }
+                        label = { Text("Sin sobre", style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
                 items(estado.sobresActivos) { sobre ->
                     FilterChip(
                         selected = estado.sobreSeleccionado?.id == sobre.id,
                         onClick = { viewModel.onSobreSeleccionado(sobre) },
-                        label = { Text(sobre.nombre) }
+                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
             }
@@ -125,6 +118,7 @@ fun FormularioMovimientoScreen(
                 }
             }
         )
+    }
     }
 
     if (mostrarDatePicker) {

@@ -84,9 +84,9 @@ class FusionSobresViewModel @Inject constructor(
                     exito = true
                 )
                 estado.cuentaSeleccionadaId?.let { seleccionarCuenta(it) }
-            } catch (e: IllegalStateException) {
-                _uiState.value = estado.copy(error = e.message)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: RuntimeException) {
+                // fusionarSobres valida con require()/error(): IllegalArgumentException
+                // o IllegalStateException segun el caso, ambas con mensaje para el usuario.
                 _uiState.value = estado.copy(error = e.message)
             }
         }

@@ -81,10 +81,8 @@ class CuentasSobresViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(cuentaSeleccionadaId = id, sobresDeCuenta = emptyList())
         jobSobres?.cancel()
         if (id == null) return
-        jobSobres = sobreRepository.observarTodos()
-            .onEach { todos ->
-                _uiState.value = _uiState.value.copy(sobresDeCuenta = todos.filter { it.cuentaId == id })
-            }
+        jobSobres = sobreRepository.observarTodosDeCuenta(id)
+            .onEach { sobres -> _uiState.value = _uiState.value.copy(sobresDeCuenta = sobres) }
             .launchIn(viewModelScope)
     }
 

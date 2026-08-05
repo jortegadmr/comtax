@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -64,23 +65,23 @@ class BalanceCuentaViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<BalanceCuentaUiState> = combine(
         balanceRepository.observarBalance(),
-        _sobreSeleccionadoId,
-        _rangoFechas,
         combine(_sobreSeleccionadoId, _rangoFechas) { sobreId, rango -> sobreId to rango }
-            .flatMapLatest { (sobreId, rango) ->
-                movimientoRepository.listadoFiltrado(cuentaId, sobreId, rango.desde, rango.hasta)
-            }
-    ) { balance, sobreSeleccionadoId, rango, movimientos ->
-        BalanceCuentaUiState(
-            cuenta = balance.cuentas.firstOrNull { it.id == cuentaId },
-            saldoCuenta = balance.saldoPorCuenta[cuentaId] ?: 0,
-            sobres = balance.sobres.filter { it.cuentaId == cuentaId },
-            saldoPorSobre = balance.saldoPorSobre,
-            sobreSeleccionadoId = sobreSeleccionadoId,
-            rangoFechas = rango,
-            movimientos = movimientos
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BalanceCuentaUiState())
+    ) { balance, filtro -> balance to filtro }
+        .flatMapLatest { (balance, filtro) ->
+            val (sobreSeleccionadoId, rango) = filtro
+            movimientoRepository.listadoFiltrado(cuentaId, sobreSeleccionadoId, rango.desde, rango.hasta)
+                .map { movimientos ->
+                    BalanceCuentaUiState(
+                        cuenta = balance.cuentas.firstOrNull { it.id == cuentaId },
+                        saldoCuenta = balance.saldoPorCuenta[cuentaId] ?: 0,
+                        sobres = balance.sobres.filter { it.cuentaId == cuentaId },
+                        saldoPorSobre = balance.saldoPorSobre,
+                        sobreSeleccionadoId = sobreSeleccionadoId,
+                        rangoFechas = rango,
+                        movimientos = movimientos
+                    )
+                }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BalanceCuentaUiState())
 
     fun seleccionarSobre(sobreId: Long?) {
         _sobreSeleccionadoId.value = if (_sobreSeleccionadoId.value == sobreId) null else sobreId

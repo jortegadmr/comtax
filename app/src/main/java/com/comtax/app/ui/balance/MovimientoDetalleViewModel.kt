@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.comtax.app.data.local.entity.MovimientoEntity
 import com.comtax.app.data.local.entity.SobreEntity
+import com.comtax.app.data.repository.AvisoNegativo
 import com.comtax.app.data.repository.MovimientoRepository
 import com.comtax.app.data.repository.SobreRepository
 import com.comtax.app.ui.navigation.MovimientoDetalle
@@ -28,6 +29,7 @@ data class MovimientoDetalleUiState(
     val concepto: String = "",
     val fecha: LocalDate = LocalDate.now(),
     val errorFormulario: String? = null,
+    val avisoNegativo: AvisoNegativo? = null,
     val cargando: Boolean = true
 )
 
@@ -75,7 +77,7 @@ class MovimientoDetalleViewModel @Inject constructor(
 
     fun onImporteCambia(texto: String) {
         if (texto.length <= 10 && texto.all { it.isDigit() || it == ',' || it == '.' }) {
-            _uiState.value = _uiState.value.copy(importeTexto = texto, errorFormulario = null)
+            _uiState.value = _uiState.value.copy(importeTexto = texto, errorFormulario = null, avisoNegativo = null)
         }
     }
 
@@ -84,31 +86,50 @@ class MovimientoDetalleViewModel @Inject constructor(
     }
 
     fun onFechaCambia(fecha: LocalDate) {
-        _uiState.value = _uiState.value.copy(fecha = fecha)
+        _uiState.value = _uiState.value.copy(fecha = fecha, avisoNegativo = null)
     }
 
     fun onSobreSeleccionado(sobre: SobreEntity?) {
-        _uiState.value = _uiState.value.copy(sobreSeleccionado = sobre)
+        _uiState.value = _uiState.value.copy(sobreSeleccionado = sobre, avisoNegativo = null)
     }
 
-    fun guardarEdicion() {
+    /**
+     * Un solo boton para guardar: la primera pulsacion calcula si el gasto editado
+     * deja el sobre/cuenta en negativo (igual que al dar de alta un movimiento). Si
+     * hay aviso, se muestra y esta misma funcion guarda en la segunda pulsacion.
+     */
+    fun onGuardarClick() = viewModelScope.launch {
         val estado = _uiState.value
-        val movimiento = estado.movimiento ?: return
+        val movimiento = estado.movimiento ?: return@launch
         val importe = textoACentimos(estado.importeTexto)
         if (importe == null || estado.concepto.isBlank()) {
             _uiState.value = estado.copy(errorFormulario = "Revisa el importe y el concepto")
-            return
+            return@launch
         }
-        viewModelScope.launch {
-            movimientoRepository.editar(
-                movimiento = movimiento,
+
+        if (estado.avisoNegativo == null) {
+            val aviso = movimientoRepository.calcularAvisoNegativo(
+                tipo = movimiento.tipo,
+                cuentaId = movimiento.cuentaId,
                 sobreId = estado.sobreSeleccionado?.id,
                 importeCentimos = importe,
-                concepto = estado.concepto.trim(),
-                fecha = estado.fecha
+                movimientoOriginal = movimiento
             )
-            _eventos.send(MovimientoDetalleEvento.Guardado)
+            if (aviso != null) {
+                _uiState.value = _uiState.value.copy(avisoNegativo = aviso, errorFormulario = null)
+                return@launch
+            }
         }
+
+        movimientoRepository.editar(
+            movimiento = movimiento,
+            sobreId = estado.sobreSeleccionado?.id,
+            importeCentimos = importe,
+            concepto = estado.concepto.trim(),
+            fecha = estado.fecha,
+            pendienteCuadre = estado.avisoNegativo != null
+        )
+        _eventos.send(MovimientoDetalleEvento.Guardado)
     }
 
     fun anular() {

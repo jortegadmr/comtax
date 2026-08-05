@@ -20,6 +20,9 @@ class SobreRepository @Inject constructor(
     fun observarActivosDeCuenta(cuentaId: Long): Flow<List<SobreEntity>> =
         sobreDao.observarActivosDeCuenta(cuentaId)
 
+    fun observarTodosDeCuenta(cuentaId: Long): Flow<List<SobreEntity>> =
+        sobreDao.observarTodosDeCuenta(cuentaId)
+
     suspend fun obtenerPorId(id: Long): SobreEntity? = sobreDao.obtenerPorId(id)
 
     suspend fun crear(cuentaId: Long, nombre: String): Long =

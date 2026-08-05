@@ -1,10 +1,12 @@
 package com.comtax.app.ui.ajustes
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.comtax.app.data.security.PinManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PinSettingsUiState(
@@ -47,11 +49,13 @@ class PinSettingsViewModel @Inject constructor(
             _uiState.value = estado.copy(error = "Los PIN nuevos no coinciden")
             return
         }
-        val ok = pinManager.cambiarPin(estado.pinActual, estado.pinNuevo)
-        _uiState.value = if (ok) {
-            PinSettingsUiState(exito = true)
-        } else {
-            estado.copy(error = "El PIN actual no es correcto")
+        viewModelScope.launch {
+            val ok = pinManager.cambiarPin(estado.pinActual, estado.pinNuevo)
+            _uiState.value = if (ok) {
+                PinSettingsUiState(exito = true)
+            } else {
+                estado.copy(error = "El PIN actual no es correcto")
+            }
         }
     }
 }

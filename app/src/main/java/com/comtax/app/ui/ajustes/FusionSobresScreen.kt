@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
@@ -36,22 +38,23 @@ import com.comtax.app.ui.theme.VerdeIngreso
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FusionSobresScreen(
+    onVolver: () -> Unit,
     viewModel: FusionSobresViewModel = hiltViewModel()
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var expandidoCuenta by remember { mutableStateOf(false) }
 
+    ScaffoldConVolver(titulo = "Fusionar sobres", onVolver = onVolver) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        Text(text = "Fusionar sobres", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "El sobre origen se archiva y todo su historial pasa al sobre destino.",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 8.dp)
+            style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.padding(top = 20.dp))
 
@@ -89,7 +92,8 @@ fun FusionSobresScreen(
                     FilterChip(
                         selected = estado.origenId == sobre.id,
                         onClick = { viewModel.seleccionarOrigen(sobre.id) },
-                        label = { Text(sobre.nombre) }
+                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
             }
@@ -102,7 +106,8 @@ fun FusionSobresScreen(
                     FilterChip(
                         selected = estado.destinoId == sobre.id,
                         onClick = { viewModel.seleccionarDestino(sobre.id) },
-                        label = { Text(sobre.nombre) }
+                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
             }
@@ -122,5 +127,6 @@ fun FusionSobresScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
             Text(text = "Sobres fusionados correctamente", color = VerdeIngreso, style = MaterialTheme.typography.bodyLarge)
         }
+    }
     }
 }
