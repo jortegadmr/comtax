@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  API < 31 (legacy Auto Backup). El fichero de PIN se excluye porque su clave
+  vive en Android Keystore y no se restaura en un dispositivo nuevo: si se
+  respaldara, tras restaurar quedaria indescifrable (PIN configurado pero no verificable).
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="comtax_secure_prefs.xml" />
+</full-backup-content>

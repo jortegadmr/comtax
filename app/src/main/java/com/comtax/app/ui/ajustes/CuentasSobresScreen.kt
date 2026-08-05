@@ -1,0 +1,180 @@
+package com.comtax.app.ui.ajustes
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.comtax.app.data.local.entity.CuentaEntity
+import com.comtax.app.data.local.entity.EstadoSobre
+import com.comtax.app.data.local.entity.SobreEntity
+import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.theme.Dimens
+
+@Composable
+fun CuentasSobresScreen(
+    viewModel: CuentasSobresViewModel = hiltViewModel()
+) {
+    val estado by viewModel.uiState.collectAsStateWithLifecycle()
+    var cuentaARenombrar by remember { mutableStateOf<CuentaEntity?>(null) }
+    var sobreARenombrar by remember { mutableStateOf<SobreEntity?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(Dimens.espacioPantalla)
+    ) {
+        Text(text = "Cuentas", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.padding(top = 16.dp))
+
+        estado.cuentas.forEach { cuenta ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .clickable { viewModel.seleccionarCuenta(cuenta.id) },
+                colors = CardDefaults.cardColors()
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Row {
+                        IconButton(onClick = { cuentaARenombrar = cuenta }) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Renombrar")
+                        }
+                        TextButton(onClick = {
+                            if (cuenta.archivada) viewModel.desarchivarCuenta(cuenta.id)
+                            else viewModel.archivarCuenta(cuenta.id)
+                        }) {
+                            Text(if (cuenta.archivada) "Desarchivar" else "Archivar")
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        OutlinedTextField(
+            value = estado.nombreNuevaCuenta,
+            onValueChange = viewModel::onNombreNuevaCuentaCambia,
+            label = { Text("Nombre de la nueva cuenta") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.padding(top = 8.dp))
+        BotonGrande(texto = "Crear cuenta", onClick = viewModel::crearCuenta)
+
+        val cuentaSeleccionada = estado.cuentas.firstOrNull { it.id == estado.cuentaSeleccionadaId }
+        if (cuentaSeleccionada != null) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Text(text = "Sobres de ${cuentaSeleccionada.nombre}", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+
+            estado.sobresDeCuenta.forEach { sobre ->
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), colors = CardDefaults.cardColors()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = sobre.nombre + if (sobre.estado == EstadoSobre.ARCHIVADO) " (archivado)" else "",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Row {
+                            IconButton(onClick = { sobreARenombrar = sobre }) {
+                                Icon(Icons.Filled.Edit, contentDescription = "Renombrar")
+                            }
+                            TextButton(onClick = { viewModel.cambiarEstadoSobre(sobre) }) {
+                                Text(if (sobre.estado == EstadoSobre.ARCHIVADO) "Desarchivar" else "Archivar")
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            OutlinedTextField(
+                value = estado.nombreNuevoSobre,
+                onValueChange = viewModel::onNombreNuevoSobreCambia,
+                label = { Text("Nombre del nuevo sobre") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            BotonGrande(texto = "Crear sobre", onClick = viewModel::crearSobre)
+        }
+    }
+
+    cuentaARenombrar?.let { cuenta ->
+        DialogoRenombrar(
+            valorInicial = cuenta.nombre,
+            onConfirmar = { nuevoNombre ->
+                viewModel.renombrarCuenta(cuenta.id, nuevoNombre)
+                cuentaARenombrar = null
+            },
+            onCancelar = { cuentaARenombrar = null }
+        )
+    }
+
+    sobreARenombrar?.let { sobre ->
+        DialogoRenombrar(
+            valorInicial = sobre.nombre,
+            onConfirmar = { nuevoNombre ->
+                viewModel.renombrarSobre(sobre.id, nuevoNombre)
+                sobreARenombrar = null
+            },
+            onCancelar = { sobreARenombrar = null }
+        )
+    }
+}
+
+@Composable
+private fun DialogoRenombrar(
+    valorInicial: String,
+    onConfirmar: (String) -> Unit,
+    onCancelar: () -> Unit
+) {
+    var texto by remember { mutableStateOf(valorInicial) }
+    AlertDialog(
+        onDismissRequest = onCancelar,
+        title = { Text("Renombrar") },
+        text = {
+            OutlinedTextField(value = texto, onValueChange = { texto = it }, singleLine = true)
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirmar(texto) }) { Text("Guardar") }
+        },
+        dismissButton = {
+            TextButton(onClick = onCancelar) { Text("Cancelar") }
+        }
+    )
+}

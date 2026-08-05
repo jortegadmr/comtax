@@ -1,0 +1,47 @@
+package com.comtax.app.ui.common
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.comtax.app.ui.theme.AmbarAviso
+import com.comtax.app.ui.theme.AmbarAvisoFondo
+import com.comtax.app.ui.theme.Dimens
+
+@Composable
+fun AvisoNegativoCard(
+    mensaje: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(Dimens.radioBorde),
+        colors = CardDefaults.cardColors(containerColor = AmbarAvisoFondo)
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                imageVector = Icons.Filled.Warning,
+                contentDescription = "Aviso",
+                tint = AmbarAviso
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = mensaje,
+                style = MaterialTheme.typography.bodyLarge,
+                color = AmbarAviso
+            )
+        }
+    }
+}
