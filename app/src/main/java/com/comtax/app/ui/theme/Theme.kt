@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 
 private val ComtaxColorScheme = lightColorScheme(
     primary = VerdePrimario,
@@ -27,6 +28,13 @@ private val ComtaxColorScheme = lightColorScheme(
 private val ComtaxShapes = Shapes(
     medium = RoundedCornerShape(Dimens.radioBorde)
 )
+
+// Gradiente de marca para superficies grandes SIN texto encima (p.ej. la franja
+// decorativa sobre "Saldo actual" en BalanceCuentaScreen). Deliberadamente NO se usa
+// como fondo de BotonGrande/CTA: el label blanco de esos botones no llega a contraste
+// AA sobre este gradiente a plena saturacion, y ese riesgo pesa mas que la coherencia
+// de marca en botones. Ver comentario junto a VerdeMarcaInicio.
+fun brandGradient(): Brush = Brush.linearGradient(listOf(VerdeMarcaInicio, VerdeMarcaFin))
 
 // Tema unico, fijo en claro: predictibilidad y contraste garantizado priman sobre
 // seguir el modo oscuro del sistema, dado el perfil de usuario (persona mayor).

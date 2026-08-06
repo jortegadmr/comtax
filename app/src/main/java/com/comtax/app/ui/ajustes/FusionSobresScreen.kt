@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
@@ -93,6 +94,7 @@ fun FusionSobresScreen(
                         selected = estado.origenId == sobre.id,
                         onClick = { viewModel.seleccionarOrigen(sobre.id) },
                         label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        shape = FormaSobre(),
                         modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }
@@ -107,6 +109,7 @@ fun FusionSobresScreen(
                         selected = estado.destinoId == sobre.id,
                         onClick = { viewModel.seleccionarDestino(sobre.id) },
                         label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        shape = FormaSobre(),
                         modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }

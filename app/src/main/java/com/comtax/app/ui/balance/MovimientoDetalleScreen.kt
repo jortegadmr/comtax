@@ -35,6 +35,7 @@ import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.CampoImporte
+import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.util.centimosATexto
 import com.comtax.app.ui.theme.AmbarAviso
@@ -77,7 +78,7 @@ fun MovimientoDetalleScreen(
             .padding(Dimens.espacioPantalla)
     ) {
         if (movimiento.pendienteCuadre) {
-            Text(text = "Pendiente de cuadre", color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Pendiente de cuadre", color = AmbarAviso, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             BotonGrandeSecundario(texto = "Marcar como cuadrado", onClick = viewModel::marcarCuadrado)
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
@@ -118,6 +119,7 @@ fun MovimientoDetalleScreen(
                         selected = estado.sobreSeleccionado?.id == sobre.id,
                         onClick = { viewModel.onSobreSeleccionado(sobre) },
                         label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
+                        shape = FormaSobre(),
                         modifier = Modifier.heightIn(min = 52.dp)
                     )
                 }

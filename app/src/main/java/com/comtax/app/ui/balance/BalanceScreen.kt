@@ -30,6 +30,7 @@ import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.comoCifra
 import com.comtax.app.util.centimosATexto
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,7 +114,7 @@ fun BalanceScreen(
                             Spacer(modifier = Modifier.padding(start = Dimens.espacioPequeno))
                             Text(
                                 text = "${centimosATexto(saldo)} €",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleMedium.comoCifra(),
                                 color = if (saldo < 0) RojoGasto else VerdeIngreso
                             )
                         }

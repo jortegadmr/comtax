@@ -83,6 +83,17 @@ class AltaMovimientoViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(sobreSeleccionado = sobre)
     }
 
+    fun crearYSeleccionarSobre(nombre: String) {
+        val cuentaId = _uiState.value.cuentaSeleccionada?.id ?: return
+        val nombreTrim = nombre.trim()
+        if (nombreTrim.isBlank()) return
+        viewModelScope.launch {
+            val id = sobreRepository.crear(cuentaId, nombreTrim)
+            val sobre = sobreRepository.obtenerPorId(id) ?: return@launch
+            _uiState.value = _uiState.value.copy(sobreSeleccionado = sobre)
+        }
+    }
+
     fun onImporteCambia(texto: String) {
         if (texto.length <= 10 && texto.all { it.isDigit() || it == ',' || it == '.' }) {
             _uiState.value = _uiState.value.copy(importeTexto = texto, errorFormulario = null)

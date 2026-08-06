@@ -135,4 +135,34 @@ class AltaMovimientoViewModelTest {
         val saldo = movimientoRepository.saldoActualSobre(sobreId)
         assertEquals(700L, saldo)
     }
+
+    @Test
+    fun `crearYSeleccionarSobre crea el sobre y lo deja seleccionado`() = runBlocking {
+        val viewModel = crearViewModel(TipoMovimiento.INGRESO)
+        viewModel.onCuentaSeleccionada(CuentaEntity(id = cuentaId, nombre = "Guadiamar"))
+
+        viewModel.crearYSeleccionarSobre("Sobre B")
+
+        val seleccionado = withTimeout(5_000) {
+            viewModel.uiState.first { it.sobreSeleccionado?.nombre == "Sobre B" }.sobreSeleccionado
+        }
+        assertEquals(cuentaId, seleccionado?.cuentaId)
+
+        val sobresActivos = withTimeout(5_000) {
+            viewModel.uiState.first { it.sobresActivos.any { sobre -> sobre.nombre == "Sobre B" } }.sobresActivos
+        }
+        assertTrue(sobresActivos.any { it.nombre == "Sobre B" })
+    }
+
+    @Test
+    fun `crearYSeleccionarSobre ignora nombre en blanco`() = runBlocking {
+        val viewModel = crearViewModel(TipoMovimiento.INGRESO)
+        viewModel.onCuentaSeleccionada(CuentaEntity(id = cuentaId, nombre = "Guadiamar"))
+        val sobresAntes = viewModel.uiState.value.sobresActivos.size
+
+        viewModel.crearYSeleccionarSobre("   ")
+
+        assertNull(viewModel.uiState.value.sobreSeleccionado)
+        assertEquals(sobresAntes, viewModel.uiState.value.sobresActivos.size)
+    }
 }

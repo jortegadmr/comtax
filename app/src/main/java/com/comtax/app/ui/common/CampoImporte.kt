@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import com.comtax.app.ui.theme.comoCifra
 
 @Composable
 fun CampoImporte(
@@ -25,7 +26,7 @@ fun CampoImporte(
             }
         },
         label = { Text(etiqueta, style = MaterialTheme.typography.bodyLarge) },
-        textStyle = MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center),
+        textStyle = MaterialTheme.typography.headlineMedium.comoCifra().copy(textAlign = TextAlign.Center),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         singleLine = true,
         modifier = modifier.fillMaxWidth()

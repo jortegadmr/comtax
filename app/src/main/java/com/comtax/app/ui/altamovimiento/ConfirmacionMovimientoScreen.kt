@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.AvisoNegativoCard
@@ -23,6 +24,7 @@ import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.theme.AmbarAviso
 import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
+import com.comtax.app.ui.theme.comoCifra
 import com.comtax.app.util.centimosATexto
 import com.comtax.app.util.textoACentimos
 import java.time.format.DateTimeFormatter
@@ -52,7 +54,11 @@ fun ConfirmacionMovimientoScreen(
         Card(colors = CardDefaults.cardColors()) {
             Column(modifier = Modifier.padding(Dimens.espacioPantalla)) {
                 FilaResumen("Tipo", tituloTipo)
-                FilaResumen("Importe", "${centimosATexto(importeCentimos)} €")
+                FilaResumen(
+                    etiqueta = "Importe",
+                    valor = "${centimosATexto(importeCentimos)} €",
+                    valorStyle = MaterialTheme.typography.bodyLarge.comoCifra()
+                )
                 FilaResumen("Cuenta", estado.cuentaSeleccionada?.nombre.orEmpty(), estado.cuentaSeleccionada?.colorHex)
                 estado.sobreSeleccionado?.let { FilaResumen("Sobre", it.nombre) }
                 FilaResumen("Fecha", estado.fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
@@ -95,7 +101,12 @@ fun ConfirmacionMovimientoScreen(
 }
 
 @Composable
-private fun FilaResumen(etiqueta: String, valor: String, colorHex: String? = null) {
+private fun FilaResumen(
+    etiqueta: String,
+    valor: String,
+    colorHex: String? = null,
+    valorStyle: TextStyle = MaterialTheme.typography.bodyLarge
+) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = Dimens.espacioMinimo)
@@ -104,6 +115,7 @@ private fun FilaResumen(etiqueta: String, valor: String, colorHex: String? = nul
             PuntoColor(it)
             Spacer(modifier = Modifier.padding(start = Dimens.espacioPequeno))
         }
-        Text(text = "$etiqueta: $valor", style = MaterialTheme.typography.bodyLarge)
+        Text(text = "$etiqueta: ", style = MaterialTheme.typography.bodyLarge)
+        Text(text = valor, style = valorStyle)
     }
 }

@@ -19,3 +19,9 @@ val SuperficieApp = Color(0xFFF5F5F5)
 val TextoPrincipal = Color(0xFF1A1A1A)
 val TextoSecundario = Color(0xFF444444)
 val BordeFuerte = Color(0xFF767680)
+
+// Gradiente de marca (igual que el icono adaptativo de la app). Solo para superficies
+// grandes (cabecera de saldo, CTA principal) — a esta saturacion NO cumple contraste
+// AA como color de texto, por eso los textos siguen usando VerdePrimario.
+val VerdeMarcaInicio = Color(0xFF0EA265)
+val VerdeMarcaFin = Color(0xFF1AC1B6)

@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
@@ -44,6 +46,7 @@ import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
+import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.AmbarAviso
 import com.comtax.app.ui.theme.AmbarAvisoFondo
@@ -53,7 +56,9 @@ import com.comtax.app.ui.theme.RojoGasto
 import com.comtax.app.ui.theme.SuperficieApp
 import com.comtax.app.ui.theme.TextoSecundario
 import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.brandGradient
 import com.comtax.app.ui.theme.colorDesdeHex
+import com.comtax.app.ui.theme.comoCifra
 import com.comtax.app.util.centimosATexto
 import java.time.Instant
 import java.time.ZoneOffset
@@ -103,14 +108,28 @@ fun BalanceCuentaScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = SuperficieApp)
             ) {
-                Column(modifier = Modifier.fillMaxWidth().padding(Dimens.espacioPantalla)) {
-                    Text(text = "Saldo actual", style = MaterialTheme.typography.bodyMedium, color = TextoSecundario)
-                    Spacer(modifier = Modifier.padding(top = Dimens.espacioMinimo))
-                    Text(
-                        text = "${centimosATexto(estado.saldoCuenta)} €",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = if (estado.saldoCuenta < 0) RojoGasto else VerdeIngreso
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .background(
+                                brush = brandGradient(),
+                                shape = RoundedCornerShape(
+                                    topStart = Dimens.radioBorde,
+                                    topEnd = Dimens.radioBorde
+                                )
+                            )
                     )
+                    Column(modifier = Modifier.fillMaxWidth().padding(Dimens.espacioPantalla)) {
+                        Text(text = "Saldo actual", style = MaterialTheme.typography.bodyMedium, color = TextoSecundario)
+                        Spacer(modifier = Modifier.padding(top = Dimens.espacioMinimo))
+                        Text(
+                            text = "${centimosATexto(estado.saldoCuenta)} €",
+                            style = MaterialTheme.typography.headlineLarge.comoCifra(),
+                            color = if (estado.saldoCuenta < 0) RojoGasto else VerdeIngreso
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
@@ -131,6 +150,7 @@ fun BalanceCuentaScreen(
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             },
+                            shape = FormaSobre(),
                             modifier = Modifier.heightIn(min = 52.dp)
                         )
                     }
@@ -166,8 +186,6 @@ fun BalanceCuentaScreen(
             }
 
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            BotonGrandeSecundario(texto = "Exportar CSV", onClick = viewModel::exportarCsv)
-            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
 
             Text(text = "Historial", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
@@ -202,13 +220,13 @@ fun BalanceCuentaScreen(
                                         Text(
                                             text = "$signo${centimosATexto(mov.importeCentimos)} €",
                                             color = color,
-                                            style = MaterialTheme.typography.titleMedium
+                                            style = MaterialTheme.typography.titleMedium.comoCifra()
                                         )
                                     }
-                                    Spacer(modifier = Modifier.padding(top = 2.dp))
+                                    Spacer(modifier = Modifier.padding(top = Dimens.espacioMinimo))
                                     Text(text = mov.concepto, style = MaterialTheme.typography.bodyLarge)
                                     if (mov.sobreNombre != null || mov.pendienteCuadre) {
-                                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                                        Spacer(modifier = Modifier.padding(top = Dimens.espacioMinimo))
                                         Row(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                                             mov.sobreNombre?.let {
                                                 EtiquetaBadge(texto = it, color = TextoSecundario, fondo = SuperficieApp)
@@ -234,6 +252,9 @@ fun BalanceCuentaScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
+            BotonGrandeSecundario(texto = "Exportar CSV", onClick = viewModel::exportarCsv)
         }
     }
 

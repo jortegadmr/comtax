@@ -29,12 +29,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.CuentaEntity
 import com.comtax.app.data.local.entity.EstadoSobre
 import com.comtax.app.data.local.entity.SobreEntity
 import com.comtax.app.ui.common.BotonGrande
+import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.common.SelectorColorCuenta
@@ -126,7 +128,11 @@ fun CuentasSobresScreen(
             Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
 
             estado.sobresDeCuenta.forEach { sobre ->
-                Card(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.espacioMinimo), colors = CardDefaults.cardColors()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.espacioMinimo),
+                    shape = FormaSobre(corte = 16.dp, radio = Dimens.radioBorde),
+                    colors = CardDefaults.cardColors()
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(Dimens.espacioMedio),
                         horizontalArrangement = Arrangement.SpaceBetween
