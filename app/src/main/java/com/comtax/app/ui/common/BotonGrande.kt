@@ -11,7 +11,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.comtax.app.ui.theme.Dimens
 
 @Composable
@@ -29,7 +28,7 @@ fun BotonGrande(
             .fillMaxWidth()
             .heightIn(min = Dimens.alturaBotonGrande),
         colors = colors,
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(Dimens.espacioEstandar)
     ) {
         Text(text = texto, style = MaterialTheme.typography.titleLarge)
     }
@@ -40,14 +39,16 @@ fun BotonGrandeSecundario(
     texto: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    habilitado: Boolean = true
+    habilitado: Boolean = true,
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors()
 ) {
     OutlinedButton(
         onClick = onClick,
         enabled = habilitado,
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = Dimens.alturaBotonGrande)
+            .heightIn(min = Dimens.alturaBotonGrande),
+        colors = colors
     ) {
         Text(text = texto, style = MaterialTheme.typography.titleMedium)
     }

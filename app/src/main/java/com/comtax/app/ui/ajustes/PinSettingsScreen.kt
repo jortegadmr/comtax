@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
@@ -42,7 +41,7 @@ fun PinSettingsScreen(
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true
         )
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
         OutlinedTextField(
             value = estado.pinNuevo,
             onValueChange = viewModel::onPinNuevoCambia,
@@ -51,7 +50,7 @@ fun PinSettingsScreen(
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true
         )
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
         OutlinedTextField(
             value = estado.pinNuevoConfirmacion,
             onValueChange = viewModel::onPinNuevoConfirmacionCambia,
@@ -62,15 +61,15 @@ fun PinSettingsScreen(
         )
 
         if (estado.error != null) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
         if (estado.exito) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = "PIN actualizado correctamente", color = VerdeIngreso, style = MaterialTheme.typography.bodyLarge)
         }
 
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         BotonGrande(texto = "Guardar nuevo PIN", onClick = viewModel::cambiarPin)
     }
     }

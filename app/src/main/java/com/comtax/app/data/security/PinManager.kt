@@ -10,10 +10,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// Interfaz para poder sustituir la implementacion (EncryptedSharedPreferences/Android
+// Keystore, no fiable bajo Robolectric) por un fake en tests de ViewModel.
+interface PinManager {
+    fun tienePinConfigurado(): Boolean
+    suspend fun configurarPin(pin: String)
+    suspend fun verificarPin(pin: String): Boolean
+    suspend fun cambiarPin(pinActual: String, pinNuevo: String): Boolean
+}
+
 @Singleton
-class PinManager @Inject constructor(
+class PinManagerImpl @Inject constructor(
     @ApplicationContext context: Context
-) {
+) : PinManager {
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
@@ -26,12 +35,12 @@ class PinManager @Inject constructor(
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    fun tienePinConfigurado(): Boolean =
+    override fun tienePinConfigurado(): Boolean =
         prefs.contains(CLAVE_SALT) && prefs.contains(CLAVE_HASH)
 
     // PBKDF2 (120.000 iteraciones) tarda decenas de ms: se calcula fuera del hilo principal
     // para no congelar la UI mientras se escribe o cambia el PIN.
-    suspend fun configurarPin(pin: String) = withContext(Dispatchers.Default) {
+    override suspend fun configurarPin(pin: String) = withContext(Dispatchers.Default) {
         val salt = PinHasher.generarSalt()
         val hash = PinHasher.hash(pin, salt)
         prefs.edit()
@@ -40,7 +49,7 @@ class PinManager @Inject constructor(
             .apply()
     }
 
-    suspend fun verificarPin(pin: String): Boolean = withContext(Dispatchers.Default) {
+    override suspend fun verificarPin(pin: String): Boolean = withContext(Dispatchers.Default) {
         val saltTexto = prefs.getString(CLAVE_SALT, null) ?: return@withContext false
         val hashTexto = prefs.getString(CLAVE_HASH, null) ?: return@withContext false
         val salt = Base64.decode(saltTexto, Base64.NO_WRAP)
@@ -48,7 +57,7 @@ class PinManager @Inject constructor(
         PinHasher.coincide(pin, salt, hashEsperado)
     }
 
-    suspend fun cambiarPin(pinActual: String, pinNuevo: String): Boolean {
+    override suspend fun cambiarPin(pinActual: String, pinNuevo: String): Boolean {
         if (!verificarPin(pinActual)) return false
         configurarPin(pinNuevo)
         return true

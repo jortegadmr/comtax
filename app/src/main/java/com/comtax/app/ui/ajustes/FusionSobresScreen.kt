@@ -54,9 +54,9 @@ fun FusionSobresScreen(
     ) {
         Text(
             text = "El sobre origen se archiva y todo su historial pasa al sobre destino.",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyLarge
         )
-        Spacer(modifier = Modifier.padding(top = 20.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
 
         val textoCuenta = estado.cuentas.firstOrNull { it.id == estado.cuentaSeleccionadaId }?.nombre
             ?: "Elige una cuenta"
@@ -84,10 +84,10 @@ fun FusionSobresScreen(
         }
 
         if (estado.sobresDeCuenta.size >= 2) {
-            Spacer(modifier = Modifier.padding(top = 24.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioGrande))
             Text(text = "Sobre origen (se archivará)", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 items(estado.sobresDeCuenta) { sobre ->
                     FilterChip(
                         selected = estado.origenId == sobre.id,
@@ -98,10 +98,10 @@ fun FusionSobresScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
             Text(text = "Sobre destino (recibe el historial)", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 items(estado.sobresDeCuenta) { sobre ->
                     FilterChip(
                         selected = estado.destinoId == sobre.id,
@@ -112,19 +112,19 @@ fun FusionSobresScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
             BotonGrande(texto = "Fusionar sobres", onClick = viewModel::fusionar)
         } else if (estado.cuentaSeleccionadaId != null) {
-            Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
             Text(text = "Esta cuenta necesita al menos dos sobres activos para fusionar.")
         }
 
         if (estado.error != null) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
         if (estado.exito) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = "Sobres fusionados correctamente", color = VerdeIngreso, style = MaterialTheme.typography.bodyLarge)
         }
     }

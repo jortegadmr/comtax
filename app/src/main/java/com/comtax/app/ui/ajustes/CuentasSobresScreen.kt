@@ -28,7 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.CuentaEntity
@@ -64,21 +64,26 @@ fun CuentasSobresScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = Dimens.espacioMinimo)
                     .clickable { viewModel.seleccionarCuenta(cuenta.id) },
                 colors = CardDefaults.cardColors()
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier.fillMaxWidth().padding(Dimens.espacioMedio),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    ) {
                         PuntoColor(cuenta.colorHex)
-                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                        Spacer(modifier = Modifier.padding(start = Dimens.espacioPequeno))
                         Text(
                             text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Row {
@@ -99,36 +104,39 @@ fun CuentasSobresScreen(
             }
         }
 
-        Spacer(modifier = Modifier.padding(top = 12.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
         OutlinedTextField(
             value = estado.nombreNuevaCuenta,
             onValueChange = viewModel::onNombreNuevaCuentaCambia,
             label = { Text("Nombre de la nueva cuenta") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.padding(top = 12.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
         SelectorColorCuenta(
             colorSeleccionado = estado.colorNuevaCuenta,
             onColorSeleccionado = viewModel::onColorNuevaCuentaCambia
         )
-        Spacer(modifier = Modifier.padding(top = 12.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
         BotonGrande(texto = "Crear cuenta", onClick = viewModel::crearCuenta)
 
         val cuentaSeleccionada = estado.cuentas.firstOrNull { it.id == estado.cuentaSeleccionadaId }
         if (cuentaSeleccionada != null) {
-            Spacer(modifier = Modifier.padding(top = 32.dp))
-            Text(text = "Sobres de ${cuentaSeleccionada.nombre}", style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
+            Text(text = "Sobres de ${cuentaSeleccionada.nombre}", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
 
             estado.sobresDeCuenta.forEach { sobre ->
-                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), colors = CardDefaults.cardColors()) {
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.espacioMinimo), colors = CardDefaults.cardColors()) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        modifier = Modifier.fillMaxWidth().padding(Dimens.espacioMedio),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = sobre.nombre + if (sobre.estado == EstadoSobre.ARCHIVADO) " (archivado)" else "",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
                         )
                         Row {
                             IconButton(onClick = { sobreARenombrar = sobre }) {
@@ -142,14 +150,14 @@ fun CuentasSobresScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 8.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             OutlinedTextField(
                 value = estado.nombreNuevoSobre,
                 onValueChange = viewModel::onNombreNuevoSobreCambia,
                 label = { Text("Nombre del nuevo sobre") },
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.padding(top = 8.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             BotonGrande(texto = "Crear sobre", onClick = viewModel::crearSobre)
         }
     }

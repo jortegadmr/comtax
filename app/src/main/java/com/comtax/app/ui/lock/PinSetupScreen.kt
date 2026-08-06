@@ -19,7 +19,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.theme.Dimens
@@ -50,9 +49,9 @@ fun PinSetupScreen(
             Text(
                 text = "Se te pedirá cada vez que abras la app",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = Dimens.espacioPequeno)
             )
-            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
             OutlinedTextField(
                 value = estado.pin,
                 onValueChange = viewModel::onPinCambia,
@@ -63,10 +62,10 @@ fun PinSetupScreen(
                 isError = estado.error != null
             )
             if (estado.error != null) {
-                Spacer(modifier = Modifier.padding(top = 12.dp))
+                Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
                 Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
             }
-            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
             BotonGrande(
                 texto = "Continuar",
                 onClick = viewModel::continuarAConfirmacion,
@@ -75,7 +74,7 @@ fun PinSetupScreen(
             )
         } else {
             Text(text = "Repite el PIN", style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
             OutlinedTextField(
                 value = estado.confirmacion,
                 onValueChange = viewModel::onConfirmacionCambia,
@@ -86,10 +85,10 @@ fun PinSetupScreen(
                 isError = estado.error != null
             )
             if (estado.error != null) {
-                Spacer(modifier = Modifier.padding(top = 12.dp))
+                Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
                 Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
             }
-            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
             BotonGrande(
                 texto = "Confirmar PIN",
                 onClick = viewModel::confirmarPin,

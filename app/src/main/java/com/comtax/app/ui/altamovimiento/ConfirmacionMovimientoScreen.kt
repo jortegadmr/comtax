@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -13,13 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.data.local.entity.TipoMovimiento
 import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.PuntoColor
+import com.comtax.app.ui.theme.AmbarAviso
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.util.centimosATexto
 import com.comtax.app.util.textoACentimos
@@ -45,10 +47,10 @@ fun ConfirmacionMovimientoScreen(
 
     Column(modifier = Modifier.fillMaxSize().padding(Dimens.espacioPantalla)) {
         Text(text = "Vas a registrar", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.padding(top = 20.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
 
         Card(colors = CardDefaults.cardColors()) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(modifier = Modifier.padding(Dimens.espacioPantalla)) {
                 FilaResumen("Tipo", tituloTipo)
                 FilaResumen("Importe", "${centimosATexto(importeCentimos)} €")
                 FilaResumen("Cuenta", estado.cuentaSeleccionada?.nombre.orEmpty(), estado.cuentaSeleccionada?.colorHex)
@@ -59,7 +61,7 @@ fun ConfirmacionMovimientoScreen(
         }
 
         if (aviso != null) {
-            Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
             val mensaje = buildString {
                 if (aviso.sobreQuedaNegativo && aviso.saldoResultanteSobreCentimos != null) {
                     append("Este gasto dejará el sobre en ${centimosATexto(aviso.saldoResultanteSobreCentimos)} €. ")
@@ -76,9 +78,14 @@ fun ConfirmacionMovimientoScreen(
         BotonGrande(
             texto = if (aviso != null) "Continuar de todas formas" else "Confirmar",
             onClick = viewModel::confirmar,
-            habilitado = !estado.guardando
+            habilitado = !estado.guardando,
+            colors = if (aviso != null) {
+                ButtonDefaults.buttonColors(containerColor = AmbarAviso, contentColor = BlancoSobrePrimario)
+            } else {
+                ButtonDefaults.buttonColors()
+            }
         )
-        Spacer(modifier = Modifier.padding(top = 12.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
         BotonGrandeSecundario(
             texto = "Cancelar",
             onClick = onCancelar,
@@ -91,11 +98,11 @@ fun ConfirmacionMovimientoScreen(
 private fun FilaResumen(etiqueta: String, valor: String, colorHex: String? = null) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 4.dp)
+        modifier = Modifier.padding(vertical = Dimens.espacioMinimo)
     ) {
         colorHex?.let {
             PuntoColor(it)
-            Spacer(modifier = Modifier.padding(start = 8.dp))
+            Spacer(modifier = Modifier.padding(start = Dimens.espacioPequeno))
         }
         Text(text = "$etiqueta: $valor", style = MaterialTheme.typography.bodyLarge)
     }

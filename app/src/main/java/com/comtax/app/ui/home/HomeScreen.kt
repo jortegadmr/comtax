@@ -18,7 +18,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.theme.Dimens
@@ -65,7 +64,7 @@ fun HomeScreen(
                 onClick = onGasto,
                 colors = ButtonDefaults.buttonColors(containerColor = RojoGasto)
             )
-            Spacer(modifier = Modifier.padding(top = 48.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioSeccion))
             BotonGrandeSecundario(
                 texto = "Balance y registro",
                 onClick = onBalance

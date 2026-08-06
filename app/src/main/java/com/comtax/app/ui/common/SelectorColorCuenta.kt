@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.comtax.app.ui.theme.BordeFuerte
+import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.colorDesdeHex
 import com.comtax.app.ui.theme.paletaCuentas
 
@@ -39,7 +40,7 @@ fun SelectorColorCuenta(
     onColorSeleccionado: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(Dimens.espacioEstandar)) {
         paletaCuentas.forEach { hex ->
             val seleccionado = hex == colorSeleccionado
             Box(

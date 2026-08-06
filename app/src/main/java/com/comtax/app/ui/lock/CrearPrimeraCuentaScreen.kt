@@ -14,7 +14,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
@@ -46,9 +45,9 @@ fun CrearPrimeraCuentaScreen(
         Text(
             text = "Por ejemplo: Guadiamar o El Laurel",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = Dimens.espacioPequeno)
         )
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         OutlinedTextField(
             value = estado.nombre,
             onValueChange = viewModel::onNombreCambia,
@@ -56,10 +55,10 @@ fun CrearPrimeraCuentaScreen(
             modifier = Modifier.fillMaxWidth()
         )
         if (estado.error != null) {
-            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
             Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         BotonGrande(texto = "Crear cuenta", onClick = viewModel::crear)
     }
 }

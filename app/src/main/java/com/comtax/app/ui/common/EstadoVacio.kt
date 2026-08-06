@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.comtax.app.ui.theme.Dimens
 
 @Composable
@@ -33,7 +32,7 @@ fun EstadoVacio(
             textAlign = TextAlign.Center
         )
         if (accion != null) {
-            Spacer(modifier = Modifier.padding(top = 24.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioGrande))
             accion()
         }
     }

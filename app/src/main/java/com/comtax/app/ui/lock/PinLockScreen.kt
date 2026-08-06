@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
@@ -44,7 +43,7 @@ fun PinLockScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Introduce tu PIN", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         OutlinedTextField(
             value = estado.pin,
             onValueChange = viewModel::onPinCambia,
@@ -55,7 +54,7 @@ fun PinLockScreen(
             isError = estado.error != null
         )
         if (estado.error != null) {
-            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
             Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
     }

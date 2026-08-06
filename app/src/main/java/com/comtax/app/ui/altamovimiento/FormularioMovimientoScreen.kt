@@ -60,7 +60,7 @@ fun FormularioMovimientoScreen(
             .padding(Dimens.espacioPantalla)
     ) {
         CampoImporte(valor = estado.importeTexto, onValorCambia = viewModel::onImporteCambia)
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
 
         OutlinedTextField(
             value = estado.concepto,
@@ -69,19 +69,19 @@ fun FormularioMovimientoScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
 
         Text(text = "Fecha", style = MaterialTheme.typography.bodyLarge)
-        Spacer(modifier = Modifier.padding(top = 4.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMinimo))
         TextButton(onClick = { mostrarDatePicker = true }) {
             Text(text = estado.fecha.format(formatoFecha), style = MaterialTheme.typography.titleMedium)
         }
 
         if (estado.sobresActivos.isNotEmpty()) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = "Sobre (opcional)", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 item {
                     FilterChip(
                         selected = estado.sobreSeleccionado == null,
@@ -102,11 +102,11 @@ fun FormularioMovimientoScreen(
         }
 
         if (estado.errorFormulario != null) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = estado.errorFormulario!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
 
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         BotonGrande(
             texto = "Continuar",
             onClick = {

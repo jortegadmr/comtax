@@ -20,7 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrandeSecundario
@@ -72,16 +72,16 @@ fun BalanceScreen(
                         text = "${estado.pendientesCuadre} movimiento(s) pendiente(s) de cuadre",
                         style = MaterialTheme.typography.bodyLarge,
                         color = RojoGasto,
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(Dimens.espacioMedio)
                     )
                 }
-                Spacer(modifier = Modifier.padding(top = 12.dp))
+                Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
             }
 
             Text(text = "Elige una cuenta", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 items(estado.cuentas) { cuenta ->
                     val saldo = estado.saldoPorCuenta[cuenta.id] ?: 0L
                     Card(
@@ -93,18 +93,24 @@ fun BalanceScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(20.dp),
+                                .padding(Dimens.espacioPantalla),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.weight(1f),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            ) {
                                 PuntoColor(cuenta.colorHex)
-                                Spacer(modifier = Modifier.padding(start = 12.dp))
+                                Spacer(modifier = Modifier.padding(start = Dimens.espacioMedio))
                                 Text(
                                     text = cuenta.nombre + if (cuenta.archivada) " (archivada)" else "",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
+                            Spacer(modifier = Modifier.padding(start = Dimens.espacioPequeno))
                             Text(
                                 text = "${centimosATexto(saldo)} €",
                                 style = MaterialTheme.typography.titleMedium,
@@ -115,7 +121,7 @@ fun BalanceScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPantalla))
             BotonGrandeSecundario(texto = "Exportar todo (CSV)", onClick = viewModel::exportarTodoCsv)
         }
     }

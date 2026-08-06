@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +37,8 @@ import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.CampoImporte
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.util.centimosATexto
+import com.comtax.app.ui.theme.AmbarAviso
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.RojoGasto
 import java.time.Instant
@@ -75,13 +78,13 @@ fun MovimientoDetalleScreen(
     ) {
         if (movimiento.pendienteCuadre) {
             Text(text = "Pendiente de cuadre", color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.padding(top = 8.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             BotonGrandeSecundario(texto = "Marcar como cuadrado", onClick = viewModel::marcarCuadrado)
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
         }
 
         CampoImporte(valor = estado.importeTexto, onValorCambia = viewModel::onImporteCambia)
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
 
         OutlinedTextField(
             value = estado.concepto,
@@ -90,7 +93,7 @@ fun MovimientoDetalleScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
 
         Text(text = "Fecha", style = MaterialTheme.typography.bodyLarge)
         TextButton(onClick = { mostrarDatePicker = true }) {
@@ -98,10 +101,10 @@ fun MovimientoDetalleScreen(
         }
 
         if (estado.sobresActivos.isNotEmpty()) {
-            Spacer(modifier = Modifier.padding(top = 8.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             Text(text = "Sobre", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 item {
                     FilterChip(
                         selected = estado.sobreSeleccionado == null,
@@ -122,13 +125,13 @@ fun MovimientoDetalleScreen(
         }
 
         if (estado.errorFormulario != null) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             Text(text = estado.errorFormulario!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
         }
 
         val aviso = estado.avisoNegativo
         if (aviso != null) {
-            Spacer(modifier = Modifier.padding(top = 16.dp))
+            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
             val mensaje = buildString {
                 if (aviso.sobreQuedaNegativo && aviso.saldoResultanteSobreCentimos != null) {
                     append("Este cambio dejará el sobre en ${centimosATexto(aviso.saldoResultanteSobreCentimos)} €. ")
@@ -140,13 +143,22 @@ fun MovimientoDetalleScreen(
             AvisoNegativoCard(mensaje = mensaje.trim())
         }
 
-        Spacer(modifier = Modifier.padding(top = 32.dp))
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         BotonGrande(
             texto = if (aviso != null) "Guardar de todas formas" else "Guardar cambios",
-            onClick = viewModel::onGuardarClick
+            onClick = viewModel::onGuardarClick,
+            colors = if (aviso != null) {
+                ButtonDefaults.buttonColors(containerColor = AmbarAviso, contentColor = BlancoSobrePrimario)
+            } else {
+                ButtonDefaults.buttonColors()
+            }
         )
-        Spacer(modifier = Modifier.padding(top = 12.dp))
-        BotonGrandeSecundario(texto = "Anular movimiento", onClick = viewModel::anular)
+        Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
+        BotonGrandeSecundario(
+            texto = "Anular movimiento",
+            onClick = viewModel::anular,
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = RojoGasto)
+        )
     }
     }
 

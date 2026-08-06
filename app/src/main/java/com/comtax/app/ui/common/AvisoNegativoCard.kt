@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
@@ -15,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.comtax.app.ui.theme.AmbarAviso
 import com.comtax.app.ui.theme.AmbarAvisoFondo
 import com.comtax.app.ui.theme.Dimens
@@ -27,16 +25,15 @@ fun AvisoNegativoCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(Dimens.radioBorde),
         colors = CardDefaults.cardColors(containerColor = AmbarAvisoFondo)
     ) {
-        Row(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(Dimens.espacioEstandar)) {
             Icon(
                 imageVector = Icons.Filled.Warning,
                 contentDescription = "Aviso",
                 tint = AmbarAviso
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(Dimens.espacioMedio))
             Text(
                 text = mensaje,
                 style = MaterialTheme.typography.bodyLarge,
