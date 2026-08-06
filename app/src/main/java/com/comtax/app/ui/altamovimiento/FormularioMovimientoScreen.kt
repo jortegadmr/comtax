@@ -1,18 +1,15 @@
 package com.comtax.app.ui.altamovimiento
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,12 +19,12 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,10 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.CampoImporte
-import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
+import com.comtax.app.ui.common.TarjetaSobre
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
+import com.comtax.app.ui.theme.Gasto
 import com.comtax.app.ui.theme.colorDesdeHex
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -63,7 +61,18 @@ fun FormularioMovimientoScreen(
     var mostrarDialogoNuevoSobre by remember { mutableStateOf(false) }
     val formatoFecha = remember { DateTimeFormatter.ofPattern("dd/MM/yyyy") }
 
-    ScaffoldConVolver(titulo = estado.cuentaSeleccionada?.nombre.orEmpty(), onVolver = onVolver) { padding ->
+    val colorCuenta = estado.cuentaSeleccionada?.colorHex?.let { colorDesdeHex(it) }
+    val coloresTopBar = if (colorCuenta != null) {
+        TopAppBarDefaults.topAppBarColors(containerColor = colorCuenta, titleContentColor = BlancoSobrePrimario)
+    } else {
+        TopAppBarDefaults.topAppBarColors()
+    }
+
+    ScaffoldConVolver(
+        titulo = estado.cuentaSeleccionada?.nombre.orEmpty(),
+        onVolver = onVolver,
+        colors = coloresTopBar
+    ) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,21 +80,6 @@ fun FormularioMovimientoScreen(
             .verticalScroll(rememberScrollState())
             .padding(Dimens.espacioPantalla)
     ) {
-        estado.cuentaSeleccionada?.colorHex?.let { hex ->
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .background(
-                        color = colorDesdeHex(hex),
-                        shape = RoundedCornerShape(
-                            topStart = Dimens.radioBorde,
-                            topEnd = Dimens.radioBorde
-                        )
-                    )
-            )
-            Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-        }
         CampoImporte(valor = estado.importeTexto, onValorCambia = viewModel::onImporteCambia)
         Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
 
@@ -109,20 +103,18 @@ fun FormularioMovimientoScreen(
         Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
         LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
             item {
-                FilterChip(
-                    selected = estado.sobreSeleccionado == null,
+                TarjetaSobre(
+                    nombre = "Sin sobre",
+                    seleccionado = estado.sobreSeleccionado == null,
                     onClick = { viewModel.onSobreSeleccionado(null) },
-                    label = { Text("Sin sobre", style = MaterialTheme.typography.bodyLarge) },
-                    modifier = Modifier.heightIn(min = 52.dp)
+                    forma = MaterialTheme.shapes.small
                 )
             }
             items(estado.sobresActivos) { sobre ->
-                FilterChip(
-                    selected = estado.sobreSeleccionado?.id == sobre.id,
-                    onClick = { viewModel.onSobreSeleccionado(sobre) },
-                    label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
-                    shape = FormaSobre(),
-                    modifier = Modifier.heightIn(min = 52.dp)
+                TarjetaSobre(
+                    nombre = sobre.nombre,
+                    seleccionado = estado.sobreSeleccionado?.id == sobre.id,
+                    onClick = { viewModel.onSobreSeleccionado(sobre) }
                 )
             }
             item {
@@ -140,7 +132,7 @@ fun FormularioMovimientoScreen(
 
         if (estado.errorFormulario != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = estado.errorFormulario!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.errorFormulario!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
 
         Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))

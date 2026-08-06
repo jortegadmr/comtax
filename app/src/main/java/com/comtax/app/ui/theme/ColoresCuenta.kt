@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 val paletaCuentas = listOf(
     "#1565C0", // Azul
     "#6A1B9A", // Morado
-    "#E65100", // Naranja quemado
+    "#C74400", // Naranja quemado
     "#00838F", // Turquesa oscuro
     "#AD1457"  // Granate
 )

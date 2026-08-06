@@ -14,8 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.comtax.app.ui.theme.AmbarAviso
-import com.comtax.app.ui.theme.AmbarAvisoFondo
+import com.comtax.app.ui.theme.Aviso
+import com.comtax.app.ui.theme.AvisoContenedor
 import com.comtax.app.ui.theme.Dimens
 
 @Composable
@@ -25,19 +25,19 @@ fun AvisoNegativoCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = AmbarAvisoFondo)
+        colors = CardDefaults.cardColors(containerColor = AvisoContenedor)
     ) {
         Row(modifier = Modifier.padding(Dimens.espacioEstandar)) {
             Icon(
                 imageVector = Icons.Filled.Warning,
                 contentDescription = "Aviso",
-                tint = AmbarAviso
+                tint = Aviso
             )
             Spacer(modifier = Modifier.width(Dimens.espacioMedio))
             Text(
                 text = mensaje,
                 style = MaterialTheme.typography.bodyLarge,
-                color = AmbarAviso
+                color = Aviso
             )
         }
     }

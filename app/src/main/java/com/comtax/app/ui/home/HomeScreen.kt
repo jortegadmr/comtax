@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -21,9 +23,13 @@ import androidx.compose.ui.Modifier
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
-import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.Gasto
+import com.comtax.app.ui.theme.Ingreso
+import com.comtax.app.ui.theme.BlancoSobrePrimario
 
+// Pantalla principal: ir directo a Ingreso/Gasto, sin cifras ni datos. El usuario
+// registra en el momento (p.ej. pagando en una tienda) — el saldo y el historial
+// son consulta secundaria y viven exclusivamente en "Balance y registro".
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -56,13 +62,15 @@ fun HomeScreen(
             BotonGrande(
                 texto = "Ingreso",
                 onClick = onIngreso,
-                colors = ButtonDefaults.buttonColors(containerColor = VerdeIngreso)
+                icono = Icons.Filled.Add,
+                colors = ButtonDefaults.buttonColors(containerColor = Ingreso, contentColor = BlancoSobrePrimario)
             )
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEntreBotones))
             BotonGrande(
                 texto = "Gasto",
                 onClick = onGasto,
-                colors = ButtonDefaults.buttonColors(containerColor = RojoGasto)
+                icono = Icons.Filled.Remove,
+                colors = ButtonDefaults.buttonColors(containerColor = Gasto, contentColor = BlancoSobrePrimario)
             )
             Spacer(modifier = Modifier.padding(top = Dimens.espacioSeccion))
             BotonGrandeSecundario(

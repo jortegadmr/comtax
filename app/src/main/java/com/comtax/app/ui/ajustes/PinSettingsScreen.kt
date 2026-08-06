@@ -19,8 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
-import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.Gasto
+import com.comtax.app.ui.theme.Ingreso
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,11 +62,11 @@ fun PinSettingsScreen(
 
         if (estado.error != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.error!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
         if (estado.exito) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = "PIN actualizado correctamente", color = VerdeIngreso, style = MaterialTheme.typography.bodyLarge)
+            Text(text = "PIN actualizado correctamente", color = Ingreso, style = MaterialTheme.typography.bodyLarge)
         }
 
         Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))

@@ -21,7 +21,7 @@ import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.PuntoColor
-import com.comtax.app.ui.theme.AmbarAviso
+import com.comtax.app.ui.theme.Aviso
 import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.comoCifra
@@ -86,7 +86,7 @@ fun ConfirmacionMovimientoScreen(
             onClick = viewModel::confirmar,
             habilitado = !estado.guardando,
             colors = if (aviso != null) {
-                ButtonDefaults.buttonColors(containerColor = AmbarAviso, contentColor = BlancoSobrePrimario)
+                ButtonDefaults.buttonColors(containerColor = Aviso, contentColor = BlancoSobrePrimario)
             } else {
                 ButtonDefaults.buttonColors()
             }

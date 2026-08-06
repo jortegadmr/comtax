@@ -1,5 +1,10 @@
 package com.comtax.app.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,7 +57,14 @@ fun ComtaxNavHost() {
     val inicio = remember { if (vm.tienePinConfigurado()) Bloqueo else PinSetup }
     val onVolver: () -> Unit = { navController.popBackStack() }
 
-    NavHost(navController = navController, startDestination = inicio) {
+    NavHost(
+        navController = navController,
+        startDestination = inicio,
+        enterTransition = { fadeIn(tween(180)) + slideInHorizontally(tween(180)) { it / 10 } },
+        exitTransition = { fadeOut(tween(140)) },
+        popEnterTransition = { fadeIn(tween(180)) },
+        popExitTransition = { fadeOut(tween(140)) + slideOutHorizontally(tween(140)) { it / 10 } }
+    ) {
 
         composable<Bloqueo> {
             PinLockScreen(onDesbloqueado = {

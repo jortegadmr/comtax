@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -15,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,20 +26,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.AvisoNegativoCard
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.CampoImporte
-import com.comtax.app.ui.common.FormaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
-import com.comtax.app.util.centimosATexto
-import com.comtax.app.ui.theme.AmbarAviso
+import com.comtax.app.ui.common.TarjetaSobre
+import com.comtax.app.ui.theme.Aviso
 import com.comtax.app.ui.theme.BlancoSobrePrimario
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
+import com.comtax.app.ui.theme.Gasto
+import com.comtax.app.util.centimosATexto
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -78,7 +75,7 @@ fun MovimientoDetalleScreen(
             .padding(Dimens.espacioPantalla)
     ) {
         if (movimiento.pendienteCuadre) {
-            Text(text = "Pendiente de cuadre", color = AmbarAviso, style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Pendiente de cuadre", color = Aviso, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             BotonGrandeSecundario(texto = "Marcar como cuadrado", onClick = viewModel::marcarCuadrado)
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
@@ -107,20 +104,18 @@ fun MovimientoDetalleScreen(
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 item {
-                    FilterChip(
-                        selected = estado.sobreSeleccionado == null,
+                    TarjetaSobre(
+                        nombre = "Sin sobre",
+                        seleccionado = estado.sobreSeleccionado == null,
                         onClick = { viewModel.onSobreSeleccionado(null) },
-                        label = { Text("Sin sobre", style = MaterialTheme.typography.bodyLarge) },
-                        modifier = Modifier.heightIn(min = 52.dp)
+                        forma = MaterialTheme.shapes.small
                     )
                 }
                 items(estado.sobresActivos) { sobre ->
-                    FilterChip(
-                        selected = estado.sobreSeleccionado?.id == sobre.id,
-                        onClick = { viewModel.onSobreSeleccionado(sobre) },
-                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
-                        shape = FormaSobre(),
-                        modifier = Modifier.heightIn(min = 52.dp)
+                    TarjetaSobre(
+                        nombre = sobre.nombre,
+                        seleccionado = estado.sobreSeleccionado?.id == sobre.id,
+                        onClick = { viewModel.onSobreSeleccionado(sobre) }
                     )
                 }
             }
@@ -128,7 +123,7 @@ fun MovimientoDetalleScreen(
 
         if (estado.errorFormulario != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = estado.errorFormulario!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.errorFormulario!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
 
         val aviso = estado.avisoNegativo
@@ -150,7 +145,7 @@ fun MovimientoDetalleScreen(
             texto = if (aviso != null) "Guardar de todas formas" else "Guardar cambios",
             onClick = viewModel::onGuardarClick,
             colors = if (aviso != null) {
-                ButtonDefaults.buttonColors(containerColor = AmbarAviso, contentColor = BlancoSobrePrimario)
+                ButtonDefaults.buttonColors(containerColor = Aviso, contentColor = BlancoSobrePrimario)
             } else {
                 ButtonDefaults.buttonColors()
             }
@@ -159,7 +154,7 @@ fun MovimientoDetalleScreen(
         BotonGrandeSecundario(
             texto = "Anular movimiento",
             onClick = viewModel::anular,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = RojoGasto)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = Gasto)
         )
     }
     }

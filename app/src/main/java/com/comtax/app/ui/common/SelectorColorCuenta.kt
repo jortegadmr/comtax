@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.comtax.app.ui.theme.BordeFuerte
+import com.comtax.app.ui.theme.BordeFuncional
 import com.comtax.app.ui.theme.Dimens
 import com.comtax.app.ui.theme.colorDesdeHex
 import com.comtax.app.ui.theme.paletaCuentas
@@ -30,7 +30,7 @@ fun PuntoColor(colorHex: String, modifier: Modifier = Modifier) {
             .size(24.dp)
             .clip(CircleShape)
             .background(colorDesdeHex(colorHex))
-            .border(BorderStroke(1.5.dp, BordeFuerte), CircleShape)
+            .border(BorderStroke(1.5.dp, BordeFuncional), CircleShape)
     )
 }
 

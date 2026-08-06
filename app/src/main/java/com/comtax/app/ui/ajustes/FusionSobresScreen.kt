@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -15,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -26,15 +24,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
-import com.comtax.app.ui.common.FormaSobre
+import com.comtax.app.ui.common.TarjetaSobre
 import com.comtax.app.ui.common.ScaffoldConVolver
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
-import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.Gasto
+import com.comtax.app.ui.theme.Ingreso
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,12 +87,10 @@ fun FusionSobresScreen(
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 items(estado.sobresDeCuenta) { sobre ->
-                    FilterChip(
-                        selected = estado.origenId == sobre.id,
-                        onClick = { viewModel.seleccionarOrigen(sobre.id) },
-                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
-                        shape = FormaSobre(),
-                        modifier = Modifier.heightIn(min = 52.dp)
+                    TarjetaSobre(
+                        nombre = sobre.nombre,
+                        seleccionado = estado.origenId == sobre.id,
+                        onClick = { viewModel.seleccionarOrigen(sobre.id) }
                     )
                 }
             }
@@ -105,12 +100,10 @@ fun FusionSobresScreen(
             Spacer(modifier = Modifier.padding(top = Dimens.espacioPequeno))
             LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.espacioPequeno)) {
                 items(estado.sobresDeCuenta) { sobre ->
-                    FilterChip(
-                        selected = estado.destinoId == sobre.id,
-                        onClick = { viewModel.seleccionarDestino(sobre.id) },
-                        label = { Text(sobre.nombre, style = MaterialTheme.typography.bodyLarge) },
-                        shape = FormaSobre(),
-                        modifier = Modifier.heightIn(min = 52.dp)
+                    TarjetaSobre(
+                        nombre = sobre.nombre,
+                        seleccionado = estado.destinoId == sobre.id,
+                        onClick = { viewModel.seleccionarDestino(sobre.id) }
                     )
                 }
             }
@@ -124,11 +117,11 @@ fun FusionSobresScreen(
 
         if (estado.error != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.error!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
         if (estado.exito) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioEstandar))
-            Text(text = "Sobres fusionados correctamente", color = VerdeIngreso, style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Sobres fusionados correctamente", color = Ingreso, style = MaterialTheme.typography.bodyLarge)
         }
     }
     }

@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.common.BotonGrande
 import com.comtax.app.ui.common.SelectorColorCuenta
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
+import com.comtax.app.ui.theme.Gasto
 
 @Composable
 fun CrearPrimeraCuentaScreen(
@@ -56,7 +56,7 @@ fun CrearPrimeraCuentaScreen(
         )
         if (estado.error != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
-            Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.error!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
         Spacer(modifier = Modifier.padding(top = Dimens.espacioExtra))
         BotonGrande(texto = "Crear cuenta", onClick = viewModel::crear)

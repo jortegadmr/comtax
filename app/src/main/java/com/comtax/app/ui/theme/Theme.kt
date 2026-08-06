@@ -5,20 +5,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
 
 private val ComtaxColorScheme = lightColorScheme(
-    primary = VerdePrimario,
+    primary = AccentIndigo,
     onPrimary = BlancoSobrePrimario,
-    primaryContainer = VerdePrimarioOscuro,
-    onPrimaryContainer = BlancoSobrePrimario,
-    error = RojoGasto,
+    primaryContainer = AccentIndigoContenedor,
+    onPrimaryContainer = AccentIndigoOscuro,
+    secondary = TextoSecundario,
+    onSecondary = BlancoSobrePrimario,
+    secondaryContainer = SuperficieAlt,
+    onSecondaryContainer = TextoPrincipal,
+    tertiary = AccentIndigoOscuro,
+    onTertiary = BlancoSobrePrimario,
+    tertiaryContainer = AccentIndigoContenedor,
+    onTertiaryContainer = AccentIndigoOscuro,
+    error = Gasto,
     onError = BlancoSobrePrimario,
-    background = FondoApp,
+    errorContainer = GastoContenedor,
+    onErrorContainer = Gasto,
+    background = Fondo,
     onBackground = TextoPrincipal,
-    surface = SuperficieApp,
+    surface = Superficie,
     onSurface = TextoPrincipal,
-    outline = BordeFuerte
+    surfaceVariant = SuperficieAlt,
+    onSurfaceVariant = TextoSecundario,
+    outline = BordeFuncional,
+    outlineVariant = BordeDecorativo
 )
 
 // Unico radio de esquina que la app sobreescribe: el de Card ("medium" en M3),
@@ -29,15 +41,7 @@ private val ComtaxShapes = Shapes(
     medium = RoundedCornerShape(Dimens.radioBorde)
 )
 
-// Gradiente de marca para superficies grandes SIN texto encima (p.ej. la franja
-// decorativa sobre "Saldo actual" en BalanceCuentaScreen). Deliberadamente NO se usa
-// como fondo de BotonGrande/CTA: el label blanco de esos botones no llega a contraste
-// AA sobre este gradiente a plena saturacion, y ese riesgo pesa mas que la coherencia
-// de marca en botones. Ver comentario junto a VerdeMarcaInicio.
-fun brandGradient(): Brush = Brush.linearGradient(listOf(VerdeMarcaInicio, VerdeMarcaFin))
-
-// Tema unico, fijo en claro: predictibilidad y contraste garantizado priman sobre
-// seguir el modo oscuro del sistema, dado el perfil de usuario (persona mayor).
+// Tema unico, fijo en claro — sin alternativa oscura por decision explicita de producto.
 @Composable
 fun ComtaxTheme(content: @Composable () -> Unit) {
     MaterialTheme(

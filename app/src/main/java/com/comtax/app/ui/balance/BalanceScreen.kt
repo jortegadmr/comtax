@@ -27,9 +27,12 @@ import com.comtax.app.ui.common.BotonGrandeSecundario
 import com.comtax.app.ui.common.EstadoVacio
 import com.comtax.app.ui.common.PuntoColor
 import com.comtax.app.ui.common.ScaffoldConVolver
+import com.comtax.app.ui.theme.Aviso
+import com.comtax.app.ui.theme.AvisoContenedor
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
-import com.comtax.app.ui.theme.VerdeIngreso
+import com.comtax.app.ui.theme.Gasto
+import com.comtax.app.ui.theme.Ingreso
+import com.comtax.app.ui.theme.Superficie
 import com.comtax.app.ui.theme.comoCifra
 import com.comtax.app.util.centimosATexto
 
@@ -68,11 +71,13 @@ fun BalanceScreen(
         Column(modifier = Modifier.fillMaxWidth().padding(padding).padding(Dimens.espacioPantalla)) {
 
             if (estado.pendientesCuadre > 0) {
-                Card(colors = CardDefaults.cardColors()) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = AvisoContenedor)
+                ) {
                     Text(
                         text = "${estado.pendientesCuadre} movimiento(s) pendiente(s) de cuadre",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = RojoGasto,
+                        color = Aviso,
                         modifier = Modifier.padding(Dimens.espacioMedio)
                     )
                 }
@@ -89,7 +94,8 @@ fun BalanceScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onCuentaClick(cuenta.id) },
-                        colors = CardDefaults.cardColors()
+                        colors = CardDefaults.cardColors(containerColor = Superficie),
+                        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevacionTarjeta)
                     ) {
                         Row(
                             modifier = Modifier
@@ -115,7 +121,7 @@ fun BalanceScreen(
                             Text(
                                 text = "${centimosATexto(saldo)} €",
                                 style = MaterialTheme.typography.titleMedium.comoCifra(),
-                                color = if (saldo < 0) RojoGasto else VerdeIngreso
+                                color = if (saldo < 0) Gasto else Ingreso
                             )
                         }
                     }

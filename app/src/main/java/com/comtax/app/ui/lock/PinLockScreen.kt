@@ -20,7 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.comtax.app.ui.theme.Dimens
-import com.comtax.app.ui.theme.RojoGasto
+import com.comtax.app.ui.theme.Gasto
 
 @Composable
 fun PinLockScreen(
@@ -55,7 +55,7 @@ fun PinLockScreen(
         )
         if (estado.error != null) {
             Spacer(modifier = Modifier.padding(top = Dimens.espacioMedio))
-            Text(text = estado.error!!, color = RojoGasto, style = MaterialTheme.typography.bodyLarge)
+            Text(text = estado.error!!, color = Gasto, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
