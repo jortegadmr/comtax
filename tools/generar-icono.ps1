@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Drawing
 
 $root = "C:\Users\jorte\Proton Drive\jortegadmr\My files\Personal_Jose\09_Proyectos_Personales\Programacion\comtax"
-$srcPath = Join-Path $root "tools\logo_original.png"
+$srcPath = Join-Path $root "tools\logo-original.png"
 $resPath = Join-Path $root "app\src\main\res"
 
 $src = [System.Drawing.Bitmap]::FromFile($srcPath)

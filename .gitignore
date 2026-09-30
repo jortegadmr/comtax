@@ -20,5 +20,5 @@ keystore.properties
 *.jks
 *.keystore
 
-# Intermedio de generacion de icono (no es fuente, se regenera con generar_icono.ps1)
+# Intermedio de generacion de icono (no es fuente, se regenera con generar-icono.ps1)
 tools/logo_transparent.png
